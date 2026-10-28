@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { INITIAL_BARBERS } from '../data/initialData';
-import { LayoutDashboard, TrendingDown, LogOut, Plus, Trash2, History, Wallet, Landmark, Gift } from 'lucide-react';
+import { LayoutDashboard, TrendingDown, LogOut, Plus, Trash2, History, Wallet, Landmark, Gift, MessageCircle } from 'lucide-react';
 import './AdminDashboard.css';
 
 // رابط السيرفر السحابي على Vercel
@@ -11,12 +11,10 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
   const [expenses, setExpenses] = useState([]);
   const [newExpTitle, setNewExpTitle] = useState('');
   const [newExpAmount, setNewExpAmount] = useState('');
-  const [tipInputs, setTipInputs] = useState({}); // لتخزين قيمة الـ Tip المؤقتة لكل معاملة
+  const [tipInputs, setTipInputs] = useState({});
 
   useEffect(() => {
-    // دالة جلب العمليات والمصاريف من السيرفر
     const fetchAdminData = () => {
-      // 1. جلب المعاملات المصدرة من هواتف الحلاقين
       fetch(`${API_URL}/api/transactions`)
         .then(res => res.json())
         .then(data => {
@@ -28,7 +26,6 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
         })
         .catch(err => console.error("Error fetching transactions:", err));
 
-      // 2. جلب المصاريف اليومية
       fetch(`${API_URL}/api/expenses`)
         .then(res => res.json())
         .then(data => {
@@ -41,10 +38,8 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
         .catch(err => console.error("Error fetching expenses:", err));
     };
 
-    // جلب البيانات فور فتح لوحة الأدمن
     fetchAdminData();
 
-    // جلب باقي الإعدادات (صندوق الأمس)
     fetch(`${API_URL}/api/settings/yesterday_caisse`)
       .then(res => res.json())
       .then(data => {
@@ -52,9 +47,7 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
       })
       .catch(err => console.error("Error fetching settings:", err));
 
-    // إعداد التحديث التلقائي كل 5 ثوانٍ لمزامنة أجهزة الحلاقين فوراً
     const interval = setInterval(fetchAdminData, 5000);
-
     return () => clearInterval(interval);
   }, [setTransactions]);
 
@@ -71,8 +64,7 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
     }
   };
 
-  // دالة تحديث الإكرامية لمعاملة معينة من طرف الأدمن
-  const handleUpdateTip = async (transId, currentTrans) => {
+  const handleUpdateTip = async (transId) => {
     const tipVal = Number(tipInputs[transId]) || 0;
     
     try {
@@ -86,7 +78,6 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
         t.id === transId ? { ...t, tip: tipVal } : t
       );
       setTransactions(updatedTransactions);
-
     } catch (err) {
       console.error("Error updating tip:", err);
     }
@@ -139,6 +130,34 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
     } catch (err) {
       console.error("Error deleting expense:", err);
     }
+  };
+
+  // دالة إرسال التقرير عبر واتساب مباشرة لرقم المالك
+  const handleShareWhatsApp = () => {
+    const todayStr = new Date().toLocaleDateString('fr-FR');
+    
+    const reportText = 
+`📊 *RAPPORT DE LA JOURNÉE - JR STUDIO* 💈
+📅 Date : ${todayStr}
+
+💰 *مدخول الخدمات:* ${totalServicesToday} DH
+💵 *صندوق الأمس:* ${yesterdayAmount} DH
+📥 *المجموع بالصندوق (Caisse Brut):* ${totalCaisseBeforePay} DH
+
+------------------
+✂️ *واجب الحلاقين (50%):* -${totalBarbersPay} DH
+🎁 *الإكراميات (Tips):* ${totalTipsToday} DH
+📉 *المصاريف (Dépenses):* -${totalExpenses} DH
+------------------
+
+✅ *الصافي النهائي للصالون (Laisse Net) :* *${laisseNetTotal} DH*`;
+
+    const encodedText = encodeURIComponent(reportText);
+    
+    // استبدل الرقم أدناه برقم هاتف المالك الفعلي مع رمز الدولة (مثلاً المغرب: 212 يليه الرقم بدون 0 الأول)
+    const ownerPhoneNumber = "212600000000"; 
+    
+    window.open(`https://wa.me/${ownerPhoneNumber}?text=${encodedText}`, '_blank');
   };
 
   const handleClotureDay = async () => {
@@ -317,10 +336,10 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
 
                 <div className="barber-col-services">
                   {barberTrans.length === 0 ? (
-                    <span style={{ color: '#6b7280', fontSize: '11px', textAlign: 'center' }}>لا توجد خدمات</span>
+                    <span style={{ color: '#6b7280', fontSize: '11px', textAlign: 'center', display: 'block', padding: '10px' }}>لا توجد خدمات</span>
                   ) : (
                     barberTrans.map(t => (
-                      <div key={t.id} className="barber-col-item" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '6px', backgroundColor: '#111827', padding: '8px', borderRadius: '6px', marginBottom: '6px' }}>
+                      <div key={t.id} className="barber-col-item" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '6px' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                           <span style={{ fontWeight: 'bold' }}>{t.shortName}</span>
                           <span style={{ color: '#fbbf24', fontWeight: 'bold' }}>{t.price} DH</span>
@@ -339,7 +358,7 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
                               style={{ width: '50px', backgroundColor: '#1f2937', border: '1px solid #4b5563', color: '#34d399', borderRadius: '4px', fontSize: '12px', textAlign: 'center', padding: '2px' }}
                             />
                             <button
-                              onClick={() => handleUpdateTip(t.id, t)}
+                              onClick={() => handleUpdateTip(t.id)}
                               style={{ backgroundColor: '#10b981', color: '#111827', border: 'none', borderRadius: '4px', padding: '2px 6px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}
                             >
                               حفظ
@@ -429,25 +448,52 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
         </div>
       </div>
 
-      <div style={{ marginTop: '30px', textAlign: 'center' }}>
+      {/* أزرار العمليات النهائية (إرسال التقرير عبر واتساب + الإغلاق اليومي) */}
+      <div style={{ marginTop: '30px', display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+        <button
+          onClick={handleShareWhatsApp}
+          style={{
+            backgroundColor: '#25d366',
+            color: '#ffffff',
+            border: 'none',
+            padding: '14px 24px',
+            borderRadius: '10px',
+            fontSize: '15px',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            boxShadow: '0 4px 12px rgba(37, 211, 102, 0.3)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            flex: '1',
+            minWidth: '220px',
+            justifyContent: 'center'
+          }}
+        >
+          <MessageCircle size={20} /> إرسال التقرير عبر واتساب
+        </button>
+
         <button
           onClick={handleClotureDay}
           style={{
             backgroundColor: '#10b981',
             color: '#111827',
             border: 'none',
-            padding: '14px 28px',
+            padding: '14px 24px',
             borderRadius: '10px',
-            fontSize: '16px',
+            fontSize: '15px',
             fontWeight: 'bold',
             cursor: 'pointer',
             boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '8px'
+            gap: '8px',
+            flex: '1',
+            minWidth: '220px',
+            justifyContent: 'center'
           }}
         >
-          🔒 إغلاق اليوم وتدوير الحسابات (Clôture de Journée)
+          🔒 إغلاق اليوم وتدوير الحسابات (Clôture)
         </button>
       </div>
     </div>
