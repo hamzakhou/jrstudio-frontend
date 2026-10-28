@@ -1,0 +1,264 @@
+/* تصميم واجهة الحلاق - JR Studio */
+.jr-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #111827;
+  color: #f3f4f6;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, sans-serif;
+  border-radius: 12px;
+}
+
+.jr-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #fbbf24;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* شريط الحلاقين */
+.barbers-bar {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.barber-btn {
+  background-color: #1f2937;
+  color: #d1d5db;
+  border: 1px solid #374151;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.barber-btn:hover {
+  background-color: #374151;
+}
+
+.barber-btn.active {
+  background-color: #fbbf24;
+  color: #111827;
+  border-color: #fbbf24;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* التخطيط الرئيسي */
+.jr-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .jr-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.jr-card {
+  background-color: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.jr-card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fde047;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #374151;
+  padding-bottom: 8px;
+}
+
+/* فئات الخدمات */
+.categories-bar {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 15px;
+}
+
+.cat-btn {
+  background-color: #374151;
+  color: #9ca3af;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.cat-btn.active {
+  background-color: #d97706;
+  color: #ffffff;
+}
+
+/* شبكة أزرار الخدمات */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+}
+
+.service-box {
+  background-color: #374151;
+  border: 1px solid #4b5563;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: border-color 0.2s;
+}
+
+.service-box:hover {
+  border-color: #fbbf24;
+}
+
+.service-badge {
+  background-color: #111827;
+  color: #fbbf24;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  display: inline-block;
+  margin-bottom: 4px;
+}
+
+.service-name {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #ffffff;
+}
+
+.service-price {
+  color: #fde047;
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.custom-price-input {
+  width: 100%;
+  background-color: #111827;
+  border: 1px solid #4b5563;
+  color: #fff;
+  padding: 4px;
+  font-size: 12px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+.add-btn {
+  background-color: #fbbf24;
+  color: #111827;
+  border: none;
+  font-weight: bold;
+  font-size: 12px;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.2s;
+}
+
+.add-btn:hover {
+  background-color: #f59e0b;
+}
+
+/* قائمة السجل اليومي */
+.transactions-list {
+  max-height: 250px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-right: 4px;
+}
+
+.transaction-item {
+  background-color: #374151;
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+
+.trans-short {
+  font-weight: bold;
+  color: #fbbf24;
+}
+
+.trans-time {
+  font-size: 11px;
+  color: #9ca3af;
+  margin-left: 6px;
+}
+
+.trans-price-del {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  color: #f87171;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.delete-btn:hover {
+  color: #ef4444;
+}
+
+.no-trans {
+  color: #9ca3af;
+  text-align: center;
+  font-size: 13px;
+  padding: 20px;
+}
+
+/* الحسابات النهائية */
+.totals-box {
+  margin-top: 15px;
+  padding-top: 12px;
+  border-top: 1px solid #374151;
+  background-color: #111827;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: #9ca3af;
+}
+
+.final-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fbbf24;
+}

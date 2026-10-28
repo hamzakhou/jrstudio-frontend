@@ -1,0 +1,201 @@
+/* لوحة تحكم الأدمن والكاشير - JR Studio */
+.admin-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #111827;
+  color: #f3f4f6;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #374151;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.admin-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #fbbf24;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* بطاقات الإحصائيات السريعة */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 25px;
+}
+
+.stat-card {
+  background-color: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #9ca3af;
+  margin-bottom: 6px;
+}
+
+.stat-value {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.stat-value.gold { color: #fbbf24; }
+.stat-value.blue { color: #38bdf8; }
+.stat-value.red { color: #f87171; }
+.stat-value.green { color: #4ade80; }
+
+/* عرض الحلاقين تماماً كأعمدة الدفتر الورقي */
+.barbers-columns-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.barber-column-card {
+  background-color: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.barber-col-header {
+  font-size: 16px;
+  font-weight: bold;
+  color: #fbbf24;
+  border-bottom: 1px solid #374151;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.barber-col-services {
+  max-height: 200px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.barber-col-item {
+  background-color: #111827;
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.barber-col-totals {
+  background-color: #111827;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  border-top: 1px solid #374151;
+}
+
+.barber-col-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+/* قسم المصاريف اليومية Dépenses */
+.expenses-section {
+  background-color: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 25px;
+}
+
+.expense-input-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.expense-input {
+  background-color: #111827;
+  border: 1px solid #4b5563;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.expense-input.title { flex: 2; }
+.expense-input.amount { flex: 1; }
+
+.add-expense-btn {
+  background-color: #ef4444;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.expenses-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.expense-chip {
+  background-color: #111827;
+  border: 1px solid #f87171;
+  color: #f87171;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* الصافي النهائي Laisse */
+.laisse-banner {
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  border: 2px solid #fbbf24;
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 10px 20px rgba(251, 191, 36, 0.1);
+}
+
+.laisse-title {
+  font-size: 18px;
+  color: #d1d5db;
+  margin-bottom: 8px;
+}
+
+.laisse-amount {
+  font-size: 42px;
+  font-weight: 900;
+  color: #fbbf24;
+  letter-spacing: 1px;
+}

@@ -1,0 +1,91 @@
+/* شاشة تسجيل الدخول بالـ PIN */
+.login-container {
+  max-width: 400px;
+  margin: 60px auto;
+  padding: 30px 24px;
+  background-color: #111827;
+  border: 1px solid #374151;
+  border-radius: 16px;
+  color: #ffffff;
+  font-family: system-ui, -apple-system, sans-serif;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
+
+.login-header {
+  margin-bottom: 24px;
+}
+
+.login-header h2 {
+  font-size: 22px;
+  color: #fbbf24;
+  margin-bottom: 6px;
+}
+
+.login-header p {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  text-align: right;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  color: #d1d5db;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.select-barber, .pin-input {
+  width: 100%;
+  padding: 12px;
+  background-color: #1f2937;
+  border: 1px solid #4b5563;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 15px;
+  box-sizing: border-border-box;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.select-barber:focus, .pin-input:focus {
+  border-color: #fbbf24;
+}
+
+.pin-input {
+  letter-spacing: 6px;
+  font-size: 20px;
+  text-align: center;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #fbbf24;
+  color: #111827;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 10px;
+}
+
+.login-btn:hover {
+  background-color: #f59e0b;
+}
+
+.error-msg {
+  color: #f87171;
+  font-size: 13px;
+  margin-top: 12px;
+  background-color: rgba(239, 68, 68, 0.1);
+  padding: 8px;
+  border-radius: 6px;
+}
