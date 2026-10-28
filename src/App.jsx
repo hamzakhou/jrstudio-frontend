@@ -15,12 +15,22 @@ export default function App() {
   const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [adminError, setAdminError] = useState('');
 
-  // جلب العمليات من السيرفر السحابي عند فتح التطبيق
+  // جلب العمليات من السيرفر السحابي عند فتح التطبيق مع الحماية ضد أي خطأ
   useEffect(() => {
     fetch(`${API_URL}/api/transactions`)
       .then(res => res.json())
-      .then(data => setTransactions(data))
-      .catch(err => console.error("Error fetching transactions:", err));
+      .then(data => {
+        if (Array.isArray(data)) {
+          setTransactions(data);
+        } else {
+          setTransactions([]);
+          console.error("API returned non-array data:", data);
+        }
+      })
+      .catch(err => {
+        setTransactions([]);
+        console.error("Error fetching transactions:", err);
+      });
   }, []);
 
   const handleAdminLogin = (e) => {
