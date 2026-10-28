@@ -11,31 +11,52 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
   const [expenses, setExpenses] = useState([]);
   const [newExpTitle, setNewExpTitle] = useState('');
   const [newExpAmount, setNewExpAmount] = useState('');
-  const [tipInputs, setTipInputs] = useState({}); // لتخزين قيمة الـ Tip المؤقتة لكل معاملة في لوحة الأدمن
+  const [tipInputs, setTipInputs] = useState({}); // لتخزين قيمة الـ Tip المؤقتة لكل معاملة
 
   useEffect(() => {
-    fetch(`${API_URL}/api/expenses`)
-      .then(res => res.json())
-      .then(data => {
-        if (Array.isArray(data)) {
-          setExpenses(data);
-        } else {
-          setExpenses([]);
-          console.error("Expenses API returned non-array:", data);
-        }
-      })
-      .catch(err => {
-        setExpenses([]);
-        console.error("Error fetching expenses:", err);
-      });
+    // دالة جلب العمليات والمصاريف من السيرفر
+    const fetchAdminData = () => {
+      // 1. جلب المعاملات المصدرة من هواتف الحلاقين
+      fetch(`${API_URL}/api/transactions`)
+        .then(res => res.json())
+        .then(data => {
+          if (Array.isArray(data)) {
+            setTransactions(data);
+          } else {
+            setTransactions([]);
+          }
+        })
+        .catch(err => console.error("Error fetching transactions:", err));
 
+      // 2. جلب المصاريف اليومية
+      fetch(`${API_URL}/api/expenses`)
+        .then(res => res.json())
+        .then(data => {
+          if (Array.isArray(data)) {
+            setExpenses(data);
+          } else {
+            setExpenses([]);
+          }
+        })
+        .catch(err => console.error("Error fetching expenses:", err));
+    };
+
+    // جلب البيانات فور فتح لوحة الأدمن
+    fetchAdminData();
+
+    // جلب باقي الإعدادات (صندوق الأمس)
     fetch(`${API_URL}/api/settings/yesterday_caisse`)
       .then(res => res.json())
       .then(data => {
         if (data && data.value) setYesterdayCaisse(data.value);
       })
       .catch(err => console.error("Error fetching settings:", err));
-  }, []);
+
+    // إعداد التحديث التلقائي كل 5 ثوانٍ لمزامنة أجهزة الحلاقين فوراً
+    const interval = setInterval(fetchAdminData, 5000);
+
+    return () => clearInterval(interval);
+  }, [setTransactions]);
 
   const handleYesterdayChange = async (val) => {
     setYesterdayCaisse(val);
@@ -55,21 +76,16 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
     const tipVal = Number(tipInputs[transId]) || 0;
     
     try {
-      const res = await fetch(`${API_URL}/api/transactions/${transId}/tip`, {
+      await fetch(`${API_URL}/api/transactions/${transId}/tip`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ tip: tipVal })
       });
       
-      const updatedTransactions = transactions.map(t => t.id === transId ? { ...t, tip: tipVal } : t);
+      const updatedTransactions = (Array.isArray(transactions) ? transactions : []).map(t => 
+        t.id === transId ? { ...t, tip: tipVal } : t
+      );
       setTransactions(updatedTransactions);
-      
-      // إرسال التحديث للسيرفر
-      await fetch(`${API_URL}/api/transactions`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...currentTrans, tip: tipVal })
-      });
 
     } catch (err) {
       console.error("Error updating tip:", err);
@@ -83,7 +99,6 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
   const totalCaisseBeforePay = totalServicesToday + totalTipsToday + yesterdayAmount;
   const totalExpenses = Array.isArray(expenses) ? expenses.reduce((acc, curr) => acc + Number(curr.amount), 0) : 0;
   const totalBarbersPay = totalServicesToday / 2;
-  const salonShareFromToday = totalServicesToday / 2;
   const laisseNetTotal = totalCaisseBeforePay - totalBarbersPay - totalTipsToday - totalExpenses;
 
   const handleAddExpense = async (e) => {
@@ -246,7 +261,7 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
             <span className="stat-value blue">{yesterdayAmount} DH</span>
           </div>
           <div className="stat-card" style={{ gridColumn: 'span 3', backgroundColor: '#1f2937' }}>
-            <span className="stat-label" style={{ fontSize: '15px', color: '#fbbf24' }}>المجموع الفعلي الموجود في الدرج/الصندوق الان (Caisse Brut)</span>
+            <span className="stat-label" style={{ fontSize: '15px', color: '#fbbf24' }}>المجموع الفعلي الموجود في الدرج/الصندوق الآن (Caisse Brut)</span>
             <span className="stat-value gold" style={{ fontSize: '28px' }}>{totalCaisseBeforePay} DH</span>
           </div>
         </div>
@@ -311,7 +326,6 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
                           <span style={{ color: '#fbbf24', fontWeight: 'bold' }}>{t.price} DH</span>
                         </div>
 
-                        {/* خانة تعديل/إضافة Tip من طرف الأدمن لكل خدمة */}
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid #374151', paddingTop: '4px' }}>
                           <span style={{ fontSize: '11px', color: '#34d399', display: 'flex', alignItems: 'center', gap: '3px' }}>
                             <Gift size={12} /> Tip: {t.tip || 0} DH
