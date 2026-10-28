@@ -199,3 +199,68 @@
   color: #fbbf24;
   letter-spacing: 1px;
 }
+/* --- تحسينات التجاوب الكامل للشاشات الصغيرة والهواتف (Admin) --- */
+@media (max-width: 768px) {
+  .admin-container {
+    padding: 12px !important;
+  }
+
+  .admin-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+
+  .admin-title {
+    font-size: 18px !important;
+  }
+
+  /* تحويل شبكة الإحصائيات لتكون بطاقة واحدة في كل سطر */
+  .stats-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .stat-card {
+    grid-column: span 1 !important;
+    padding: 12px !important;
+  }
+
+  .stat-value {
+    font-size: 20px !important;
+  }
+
+  /* جعل أعمدة الحلاقين تصطف عمودياً بكامل عرض الشاشة */
+  .barbers-columns-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+
+  .barber-column-card {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* ترتيب نموذج إدخال المصاريف */
+  .expense-input-group {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .expense-input.title,
+  .expense-input.amount,
+  .add-expense-btn {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .laisse-banner {
+    padding: 16px !important;
+  }
+
+  .laisse-amount {
+    font-size: 26px !important;
+  }
+}
