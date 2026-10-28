@@ -16,8 +16,18 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
   useEffect(() => {
     fetch(`${API_URL}/api/expenses`)
       .then(res => res.json())
-      .then(data => setExpenses(data))
-      .catch(err => console.error("Error fetching expenses:", err));
+      .then(data => {
+        if (Array.isArray(data)) {
+          setExpenses(data);
+        } else {
+          setExpenses([]);
+          console.error("Expenses API returned non-array:", data);
+        }
+      })
+      .catch(err => {
+        setExpenses([]);
+        console.error("Error fetching expenses:", err);
+      });
 
     fetch(`${API_URL}/api/settings/yesterday_caisse`)
       .then(res => res.json())
@@ -66,12 +76,12 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
     }
   };
 
-  const totalServicesToday = transactions.reduce((acc, curr) => acc + Number(curr.price), 0);
-  const totalTipsToday = transactions.reduce((acc, curr) => acc + Number(curr.tip || 0), 0);
+  const totalServicesToday = Array.isArray(transactions) ? transactions.reduce((acc, curr) => acc + Number(curr.price), 0) : 0;
+  const totalTipsToday = Array.isArray(transactions) ? transactions.reduce((acc, curr) => acc + Number(curr.tip || 0), 0) : 0;
   const yesterdayAmount = Number(yesterdayCaisse) || 0;
 
   const totalCaisseBeforePay = totalServicesToday + totalTipsToday + yesterdayAmount;
-  const totalExpenses = expenses.reduce((acc, curr) => acc + Number(curr.amount), 0);
+  const totalExpenses = Array.isArray(expenses) ? expenses.reduce((acc, curr) => acc + Number(curr.amount), 0) : 0;
   const totalBarbersPay = totalServicesToday / 2;
   const salonShareFromToday = totalServicesToday / 2;
   const laisseNetTotal = totalCaisseBeforePay - totalBarbersPay - totalTipsToday - totalExpenses;
@@ -276,7 +286,7 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
       <h3 style={{ color: '#fbbf24', marginBottom: '12px' }}>أعمال الحلاقين اليومية (اضغط لتسجيل الإكرامية من الأدمن):</h3>
       <div className="barbers-columns-grid">
         {INITIAL_BARBERS.map(barber => {
-          const barberTrans = transactions.filter(t => t.barber === barber.name);
+          const barberTrans = Array.isArray(transactions) ? transactions.filter(t => t.barber === barber.name) : [];
           const bTotal = barberTrans.reduce((acc, curr) => acc + Number(curr.price), 0);
           const bShare = bTotal / 2;
           const bTips = barberTrans.reduce((acc, curr) => acc + Number(curr.tip || 0), 0);
@@ -379,7 +389,7 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
         </form>
 
         <div className="expenses-list">
-          {expenses.length === 0 ? (
+          {!Array.isArray(expenses) || expenses.length === 0 ? (
             <p style={{ color: '#6b7280', fontSize: '13px' }}>لا توجد مصاريف مسجلة حتى الآن.</p>
           ) : (
             expenses.map(e => (
