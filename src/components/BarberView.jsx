@@ -21,7 +21,7 @@ export default function BarberView({ activeBarber, transactions, setTransactions
       serviceName: item.name,
       shortName: item.shortName,
       price: price,
-      tip: 0, // تبدأ الإكرامية بـ 0، والأدمن هو من يضيفها لاحقاً إن وجدت
+      tip: 0, 
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 
@@ -31,12 +31,19 @@ export default function BarberView({ activeBarber, transactions, setTransactions
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newTransaction)
       });
+      
       if (res.ok) {
         const savedTrans = await res.json();
-        setTransactions([savedTrans, ...transactions]);
+        // ضمان تحديث الحالة بالبيانات المعادة من السيرفر قاعدة البيانات
+        setTransactions(prev => [savedTrans, ...(Array.isArray(prev) ? prev : [])]);
+      } else {
+        const errorData = await res.json();
+        console.error("Server error response:", errorData);
+        alert("حدث خطأ أثناء حفظ الخدمة في السيرفر!");
       }
     } catch (err) {
       console.error("Error adding transaction:", err);
+      alert("خطأ في الاتصال بالإنترنت أو السيرفر!");
     }
   };
 
@@ -46,14 +53,14 @@ export default function BarberView({ activeBarber, transactions, setTransactions
         method: 'DELETE'
       });
       if (res.ok) {
-        setTransactions(transactions.filter(t => t.id !== id));
+        setTransactions(prev => (Array.isArray(prev) ? prev.filter(t => t.id !== id) : []));
       }
     } catch (err) {
       console.error("Error deleting transaction:", err);
     }
   };
 
-  const barberTransactions = transactions.filter(t => t.barber === activeBarber.name);
+  const barberTransactions = Array.isArray(transactions) ? transactions.filter(t => t.barber === activeBarber.name) : [];
   const barberServicesTotal = barberTransactions.reduce((acc, curr) => acc + Number(curr.price), 0);
   const barberShare = barberServicesTotal / 2;
   const barberTotalTips = barberTransactions.reduce((acc, curr) => acc + Number(curr.tip || 0), 0);
