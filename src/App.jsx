@@ -157,6 +157,8 @@ export default function App() {
             <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', color: '#d1d5db' }}>أدخل رمز الأدمن (PIN):</label>
             <input
               type="password"
+              inputMode="numeric"
+              pattern="[0-9]*"
               maxLength={4}
               placeholder="••••"
               value={adminPin}

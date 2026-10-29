@@ -105,6 +105,8 @@ export default function BarberLogin({ onLogin }) {
             </label>
             <input
               type="password"
+              inputMode="numeric"
+              pattern="[0-9]*"
               maxLength={4}
               placeholder="••••"
               value={pin}
