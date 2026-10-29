@@ -26,3 +26,17 @@ export const INITIAL_BARBERS = [
   { id: 'bilhal', name: 'Bilhal', pin: '4444' },
   { id: 'yassin', name: 'Yassin', pin: '5555' }
 ];
+
+// إنشاء فئات الخدمات تلقائياً بناءً على MENU_ITEMS لضمان عمل القائمة المنسدلة بدون أخطاء
+const categoriesMap = {};
+MENU_ITEMS.forEach(item => {
+  if (!categoriesMap[item.category]) {
+    categoriesMap[item.category] = {
+      name: item.category,
+      services: []
+    };
+  }
+  categoriesMap[item.category].services.push(item);
+});
+
+export const SERVICES_CATEGORIES = Object.values(categoriesMap);
