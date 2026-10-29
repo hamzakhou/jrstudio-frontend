@@ -87,32 +87,18 @@ export default function BarberView({ activeBarber, transactions, setTransactions
 
   return (
     <div className="jr-container">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+      {/* الهيدر العلوي */}
+      <div className="barber-header-bar">
         <h2 className="jr-title">
-          <Scissors size={24} /> الحلاق: <span style={{ color: '#fff' }}>{activeBarber}</span>
+          <Scissors size={22} /> الحلاق: <span className="barber-name-highlight">{activeBarber}</span>
         </h2>
-        <button 
-          onClick={onLogout}
-          style={{
-            backgroundColor: '#ef4444',
-            color: '#fff',
-            border: 'none',
-            padding: '8px 14px',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            fontWeight: 'bold',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '5px',
-            fontSize: '13px'
-          }}
-        >
+        <button onClick={onLogout} className="barber-logout-btn">
           <LogOut size={16} /> خروج
         </button>
       </div>
 
       <div className="jr-grid">
-        {/* قسم الخدمات والأزرار */}
+        {/* قسم أزرار والخدمات */}
         <div className="jr-card">
           <div className="jr-card-title">اختر الخدمة المقدمة:</div>
 
@@ -129,17 +115,17 @@ export default function BarberView({ activeBarber, transactions, setTransactions
             ))}
           </div>
 
-          {/* شبكة الخدمات */}
+          {/* شبكة أزرار الخدمات المتجاوبة */}
           <div className="services-grid">
             {currentCatObj?.services.map(service => (
               <div key={service.id} className="service-box">
-                <div>
+                <div className="service-info-top">
                   <span className="service-badge">{service.shortName}</span>
                   <div className="service-name">{service.name}</div>
                   <div className="service-price">{service.price} DH</div>
                 </div>
 
-                <div>
+                <div className="service-action-bottom">
                   <input
                     type="number"
                     placeholder="سعر مخصص"
@@ -159,7 +145,7 @@ export default function BarberView({ activeBarber, transactions, setTransactions
           </div>
         </div>
 
-        {/* قسم الحساب اليومي الخاص بالحلاق */}
+        {/* قسم السجل اليومي والحسابات */}
         <div className="jr-card">
           <div className="jr-card-title">سجل العمليات وحسابك اليومي:</div>
           
@@ -169,16 +155,16 @@ export default function BarberView({ activeBarber, transactions, setTransactions
             ) : (
               barberTransactions.map(t => (
                 <div key={t.id} className="transaction-item">
-                  <div>
+                  <div className="trans-info">
                     <span className="trans-short">{t.shortName}</span>
                     <span className="trans-time">({t.time})</span>
-                    <div style={{ fontSize: '11px', color: '#d1d5db' }}>{t.serviceName}</div>
+                    <div className="trans-fullname">{t.serviceName}</div>
                   </div>
                   <div className="trans-price-del">
-                    <span style={{ color: '#fbbf24', fontWeight: 'bold' }}>{t.price} DH</span>
-                    {t.tip > 0 && <span style={{ color: '#34d399', fontSize: '11px' }}>(Tip: {t.tip})</span>}
+                    <span className="trans-price">{t.price} DH</span>
+                    {t.tip > 0 && <span className="trans-tip-badge">(Tip: {t.tip})</span>}
                     <button onClick={() => handleDeleteTransaction(t.id)} className="delete-btn">
-                      <Trash2 size={14} />
+                      <Trash2 size={16} />
                     </button>
                   </div>
                 </div>
@@ -186,25 +172,25 @@ export default function BarberView({ activeBarber, transactions, setTransactions
             )}
           </div>
 
-          {/* الإجماليات */}
+          {/* صندوق الحسابات والإجماليات */}
           <div className="totals-box">
             <div className="total-row">
               <span>مجموع الخدمات:</span>
               <strong>{totalServices} DH</strong>
             </div>
-            <div className="total-row" style={{ color: '#4ade80' }}>
+            <div className="total-row green-text">
               <span>واجب الحلاق (بروتين ÷3 والباقي ÷2):</span>
               <strong>{barberShare.toFixed(2)} DH</strong>
             </div>
             {totalTips > 0 && (
-              <div className="total-row" style={{ color: '#fbbf24' }}>
+              <div className="total-row gold-text">
                 <span>إجمالي الإكراميات (Tips):</span>
                 <strong>+{totalTips} DH</strong>
               </div>
             )}
-            <div className="final-row" style={{ marginTop: '8px', borderTop: '1px solid #374151', paddingTop: '6px' }}>
+            <div className="final-row">
               <span>المجموع المستلم لك:</span>
-              <span style={{ color: '#fbbf24' }}>{totalTake.toFixed(2)} DH</span>
+              <span className="final-price">{totalTake.toFixed(2)} DH</span>
             </div>
           </div>
         </div>

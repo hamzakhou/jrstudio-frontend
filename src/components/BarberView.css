@@ -1,4 +1,4 @@
-/* تصميم واجهة الحلاق - JR Studio (مخصص للهواتف والشاشات) */
+/* تصميم متجاوب 100% لواجهة الحلاق - JR Studio */
 .jr-container {
   width: 100%;
   max-width: 1200px;
@@ -11,45 +11,44 @@
   box-sizing: border-box;
 }
 
+.barber-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 .jr-title {
   font-size: 20px;
   font-weight: bold;
   color: #fbbf24;
-  margin-bottom: 12px;
+  margin: 0;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-/* شريط الحلاقين */
-.barbers-bar {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding-bottom: 8px;
-  margin-bottom: 12px;
-  -webkit-overflow-scrolling: touch;
+.barber-name-highlight {
+  color: #ffffff;
 }
 
-.barber-btn {
-  background-color: #1f2937;
-  color: #d1d5db;
-  border: 1px solid #374151;
+.barber-logout-btn {
+  background-color: #ef4444;
+  color: #ffffff;
+  border: none;
   padding: 8px 14px;
   border-radius: 8px;
   cursor: pointer;
-  font-weight: 600;
-  white-space: nowrap;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 13px;
 }
 
-.barber-btn.active {
-  background-color: #fbbf24;
-  color: #111827;
-  border-color: #fbbf24;
-}
-
-/* التخطيط الرئيسي: عمود واحد على الهواتف، وعمودين على الشاشات الكبيرة */
+/* التخطيط الهيكلي */
 .jr-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -58,7 +57,7 @@
 
 @media (min-width: 900px) {
   .jr-grid {
-    grid-template-columns: 1.2fr 1fr;
+    grid-template-columns: 1.3fr 1fr;
     gap: 20px;
   }
 }
@@ -80,7 +79,7 @@
   padding-bottom: 8px;
 }
 
-/* فئات الخدمات (Categories) */
+/* شريط فئات الخدمات */
 .categories-bar {
   display: flex;
   gap: 6px;
@@ -94,10 +93,10 @@
   background-color: #374151;
   color: #9ca3af;
   border: none;
-  padding: 7px 12px;
+  padding: 8px 14px;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 13px;
   white-space: nowrap;
   font-weight: 500;
 }
@@ -107,7 +106,7 @@
   color: #ffffff;
 }
 
-/* شبكة أزرار الخدمات: عمودين مريحين للمس على الهواتف */
+/* شبكة أزرار الخدمات */
 .services-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -128,8 +127,8 @@
 .service-badge {
   background-color: #1f2937;
   color: #fbbf24;
-  font-size: 9px;
-  padding: 2px 5px;
+  font-size: 10px;
+  padding: 2px 6px;
   border-radius: 4px;
   font-family: monospace;
   display: inline-block;
@@ -137,7 +136,7 @@
 }
 
 .service-name {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   margin-bottom: 4px;
   color: #ffffff;
@@ -147,7 +146,7 @@
 .service-price {
   color: #fde047;
   font-weight: bold;
-  font-size: 13px;
+  font-size: 14px;
   margin-bottom: 8px;
 }
 
@@ -155,7 +154,7 @@
   width: 100%;
   background-color: #1f2937;
   border: 1px solid #4b5563;
-  color: #fff;
+  color: #ffffff;
   padding: 7px;
   font-size: 12px;
   border-radius: 6px;
@@ -169,20 +168,16 @@
   color: #111827;
   border: none;
   font-weight: bold;
-  font-size: 12px;
+  font-size: 13px;
   padding: 9px;
   border-radius: 6px;
   cursor: pointer;
   width: 100%;
 }
 
-.add-btn:active {
-  background-color: #d97706;
-}
-
 /* قائمة السجل اليومي */
 .transactions-list {
-  max-height: 220px;
+  max-height: 230px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -196,25 +191,41 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 13px;
   border: 1px solid #374151;
 }
 
 .trans-short {
   font-weight: bold;
   color: #fbbf24;
+  font-size: 13px;
 }
 
 .trans-time {
-  font-size: 10px;
+  font-size: 11px;
   color: #9ca3af;
   margin-left: 4px;
+}
+
+.trans-fullname {
+  font-size: 11px;
+  color: #d1d5db;
 }
 
 .trans-price-del {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.trans-price {
+  color: #fbbf24;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.trans-tip-badge {
+  color: #34d399;
+  font-size: 11px;
 }
 
 .delete-btn {
@@ -229,10 +240,10 @@
   color: #9ca3af;
   text-align: center;
   font-size: 12px;
-  padding: 15px;
+  padding: 20px;
 }
 
-/* الحسابات النهائية */
+/* صندوق الإجماليات النهائي */
 .totals-box {
   margin-top: 14px;
   padding-top: 10px;
@@ -250,13 +261,27 @@
   color: #9ca3af;
 }
 
+.green-text {
+  color: #4ade80;
+}
+
+.gold-text {
+  color: #fbbf24;
+}
+
 .final-row {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-size: 15px;
   font-weight: bold;
-  color: #fbbf24;
-  margin-top: 6px;
+  color: #ffffff;
+  margin-top: 8px;
   border-top: 1px solid #374151;
-  padding-top: 6px;
+  padding-top: 8px;
+}
+
+.final-price {
+  color: #fbbf24;
+  font-size: 18px;
 }
