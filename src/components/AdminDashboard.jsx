@@ -155,7 +155,7 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
     const encodedText = encodeURIComponent(reportText);
     
     // استبدل الرقم أدناه برقم هاتف المالك الفعلي مع رمز الدولة (مثلاً المغرب: 212 يليه الرقم بدون 0 الأول)
-    const ownerPhoneNumber = "212684104365"; 
+    const ownerPhoneNumber = "212662044745"; 
     
     window.open(`https://wa.me/${ownerPhoneNumber}?text=${encodedText}`, '_blank');
   };
