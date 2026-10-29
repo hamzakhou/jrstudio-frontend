@@ -90,16 +90,17 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
 
   const totalCaisseBeforePay = totalServicesToday + totalTipsToday + yesterdayAmount - totalExpenses;
 
-  // --- حساب حصة الحلاقين بدقة (البروتين على 3 والباقي على 2) ---
+  // --- حساب حصة الحلاقين بدقة (أي خدمة تحتوي على prot أو kératine تُقسم على 3 والباقي على 2) ---
   const calculateBarbersTotalPay = () => {
     if (!Array.isArray(transactions)) return 0;
     let totalPay = 0;
     transactions.forEach(t => {
       const price = Number(t.price) || 0;
-      // تحقق مما إذا كانت الخدمة عبارة عن بروتين (سواء بالاسم أو الـ shortName)
-      const isProtein = t.serviceName?.toLowerCase().includes('protine') || 
-                        t.serviceName?.toLowerCase().includes('kératine') || 
-                        t.shortName?.toLowerCase().includes('protine');
+      const sName = (t.serviceName || '').toLowerCase();
+      const sShort = (t.shortName || '').toLowerCase();
+      
+      const isProtein = sName.includes('prot') || sName.includes('kératine') || 
+                        sShort.includes('prot') || sShort.includes('kératine');
       
       if (isProtein) {
         totalPay += price / 3; // البروتين يُقسم على 3
@@ -347,13 +348,13 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
         {INITIAL_BARBERS.map(barber => {
           const barberTrans = Array.isArray(transactions) ? transactions.filter(t => t.barber === barber.name) : [];
           
-          // حساب نصيب هذا الحلاق (البروتين على 3 والباقي على 2)
           let bShare = 0;
           barberTrans.forEach(t => {
             const p = Number(t.price) || 0;
-            const isProt = t.serviceName?.toLowerCase().includes('protine') || 
-                           t.serviceName?.toLowerCase().includes('kératine') || 
-                           t.shortName?.toLowerCase().includes('protine');
+            const sName = (t.serviceName || '').toLowerCase();
+            const sShort = (t.shortName || '').toLowerCase();
+            const isProt = sName.includes('prot') || sName.includes('kératine') || 
+                           sShort.includes('prot') || sShort.includes('kératine');
             if (isProt) {
               bShare += p / 3;
             } else {
