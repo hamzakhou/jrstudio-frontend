@@ -88,9 +88,11 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
   const yesterdayAmount = Number(yesterdayCaisse) || 0;
   const totalExpenses = Array.isArray(expenses) ? expenses.reduce((acc, curr) => acc + Number(curr.amount), 0) : 0;
 
+  // --- حساب إجمالي الصندوق (Caisse Brut) بدقة ---
+  // الخدمات + الإكراميات + صندوق الأمس - المصاريف
   const totalCaisseBeforePay = totalServicesToday + totalTipsToday + yesterdayAmount - totalExpenses;
 
-  // --- حساب حصة الحلاقين بدقة (أي خدمة تحتوي على prot أو kératine تُقسم على 3 والباقي على 2) ---
+  // --- حساب حصة الحلاقين بدقة (أي خدمة تحتوي على prot أو kératine أو بروتين تُقسم على 3 والباقي على 2) ---
   const calculateBarbersTotalPay = () => {
     if (!Array.isArray(transactions)) return 0;
     let totalPay = 0;
@@ -99,8 +101,8 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
       const sName = (t.serviceName || '').toLowerCase();
       const sShort = (t.shortName || '').toLowerCase();
       
-      const isProtein = sName.includes('prot') || sName.includes('kératine') || 
-                        sShort.includes('prot') || sShort.includes('kératine');
+      const isProtein = sName.includes('prot') || sName.includes('kératine') || sName.includes('cls') || sName.includes('بروتين') ||
+                        sShort.includes('prot') || sShort.includes('kératine') || sShort.includes('cls') || sShort.includes('بروتين');
       
       if (isProtein) {
         totalPay += price / 3; // البروتين يُقسم على 3
@@ -112,6 +114,9 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
   };
 
   const totalBarbersPay = calculateBarbersTotalPay();
+  
+  // --- الصافي الحقيقي للصالون (Laisse Net) ---
+  // إجمالي الصندوق - حصة الحلاقين - الإكراميات (التي تُدفع من الصندوق)
   const laisseNetTotal = totalCaisseBeforePay - totalBarbersPay - totalTipsToday;
 
   const handleAddExpense = async (e) => {
@@ -168,15 +173,13 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
 📥 *المجموع بالصندوق (Caisse Brut):* ${totalCaisseBeforePay} DH
 
 ------------------
-✂️ *واجب الحلاقين (حسب الخدمات):* -${totalBarbersPay.toFixed(2)} DH
+✂️ *واجب الحلاقين:* -${totalBarbersPay.toFixed(2)} DH
 🎁 *الإكراميات (Tips):* ${totalTipsToday} DH
 ------------------
 
 ✅ *الصافي النهائي للصالون (Laisse Net) :* *${laisseNetTotal.toFixed(2)} DH*`;
 
     const encodedText = encodeURIComponent(reportText);
-    
-    // ضع رقم هاتف المالك الحقيقي هنا (مع رمز الدولة وبدون 0 الأول)
     const ownerPhoneNumber = "212600000000"; 
     
     window.open(`https://wa.me/${ownerPhoneNumber}?text=${encodedText}`, '_blank');
@@ -353,8 +356,8 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
             const p = Number(t.price) || 0;
             const sName = (t.serviceName || '').toLowerCase();
             const sShort = (t.shortName || '').toLowerCase();
-            const isProt = sName.includes('prot') || sName.includes('kératine') || 
-                           sShort.includes('prot') || sShort.includes('kératine');
+            const isProt = sName.includes('prot') || sName.includes('kératine') || sName.includes('cls') || sName.includes('بروتين') ||
+                           sShort.includes('prot') || sShort.includes('kératine') || sShort.includes('cls') || sShort.includes('بروتين');
             if (isProt) {
               bShare += p / 3;
             } else {
