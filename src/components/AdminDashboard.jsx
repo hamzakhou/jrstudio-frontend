@@ -88,11 +88,30 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
   const yesterdayAmount = Number(yesterdayCaisse) || 0;
   const totalExpenses = Array.isArray(expenses) ? expenses.reduce((acc, curr) => acc + Number(curr.amount), 0) : 0;
 
-  // Caisse Brut (تم خصم المصاريف لأنها خرجت فعلياً من الدرج)
   const totalCaisseBeforePay = totalServicesToday + totalTipsToday + yesterdayAmount - totalExpenses;
-  
-  const totalBarbersPay = totalServicesToday / 2;
-  const laisseNetTotal = totalCaisseBeforePay - totalBarbersPay - totalTipsToday; // أو المعادلة المعتادة
+
+  // --- حساب حصة الحلاقين بدقة (البروتين على 3 والباقي على 2) ---
+  const calculateBarbersTotalPay = () => {
+    if (!Array.isArray(transactions)) return 0;
+    let totalPay = 0;
+    transactions.forEach(t => {
+      const price = Number(t.price) || 0;
+      // تحقق مما إذا كانت الخدمة عبارة عن بروتين (سواء بالاسم أو الـ shortName)
+      const isProtein = t.serviceName?.toLowerCase().includes('protine') || 
+                        t.serviceName?.toLowerCase().includes('kératine') || 
+                        t.shortName?.toLowerCase().includes('protine');
+      
+      if (isProtein) {
+        totalPay += price / 3; // البروتين يُقسم على 3
+      } else {
+        totalPay += price / 2; // باقي الخدمات على 2
+      }
+    });
+    return totalPay;
+  };
+
+  const totalBarbersPay = calculateBarbersTotalPay();
+  const laisseNetTotal = totalCaisseBeforePay - totalBarbersPay - totalTipsToday;
 
   const handleAddExpense = async (e) => {
     e.preventDefault();
@@ -134,7 +153,7 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
     }
   };
 
-  // دالة إرسال التقرير عبر واتساب لرقم المالك الحقيقي
+  // دالة إرسال التقرير عبر واتساب
   const handleShareWhatsApp = () => {
     const todayStr = new Date().toLocaleDateString('fr-FR');
     
@@ -148,11 +167,11 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
 📥 *المجموع بالصندوق (Caisse Brut):* ${totalCaisseBeforePay} DH
 
 ------------------
-✂️ *واجب الحلاقين (50%):* -${totalBarbersPay} DH
+✂️ *واجب الحلاقين (حسب الخدمات):* -${totalBarbersPay.toFixed(2)} DH
 🎁 *الإكراميات (Tips):* ${totalTipsToday} DH
 ------------------
 
-✅ *الصافي النهائي للصالون (Laisse Net) :* *${laisseNetTotal} DH*`;
+✅ *الصافي النهائي للصالون (Laisse Net) :* *${laisseNetTotal.toFixed(2)} DH*`;
 
     const encodedText = encodeURIComponent(reportText);
     
@@ -164,7 +183,7 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
 
   const handleClotureDay = async () => {
     const todayStr = new Date().toLocaleDateString('fr-FR');
-    const confirmCloture = window.confirm(`هل أنت متأكد من إغلاق يوم ${todayStr}؟ \nسيتم أرشفة الحسابات، تصفير خدمات اليوم، ونقل الصافي (${laisseNetTotal} DH) ليكون صندوق الأمس تلقائياً.`);
+    const confirmCloture = window.confirm(`هل أنت متأكد من إغلاق يوم ${todayStr}؟ \nسيتم أرشفة الحسابات، تصفير خدمات اليوم، ونقل الصافي (${laisseNetTotal.toFixed(2)} DH) ليكون صندوق الأمس تلقائياً.`);
     
     if (!confirmCloture) return;
 
@@ -265,7 +284,7 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
         marginBottom: '25px'
       }}>
         <h3 style={{ color: '#fbbf24', margin: '0 0 15px 0', display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <Landmark size={22} /> 1. إجمالي الأموال الموجودة في الصندوق حالياً (شاملة الإكراميات مطروحاً منها المصاريف):
+          <Landmark size={22} /> 1. إجمالي الأموال الموجودة في الصندوق حالياً:
         </h3>
         
         <div className="stats-grid">
@@ -300,13 +319,13 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
         marginBottom: '25px'
       }}>
         <h3 style={{ color: '#60a5fa', margin: '0 0 15px 0', display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <Wallet size={22} /> 2. تقسيم المدخول (قسمة 50% + المصاريف):
+          <Wallet size={22} /> 2. تقسيم المدخول (حصة الحلاقين + المصاريف):
         </h3>
 
         <div className="stats-grid">
           <div className="stat-card">
-            <span className="stat-label">مجموع واجبات الحلاقين (50%)</span>
-            <span className="stat-value red" style={{ color: '#f87171' }}>-{totalBarbersPay} DH</span>
+            <span className="stat-label">مجموع واجبات الحلاقين (البروتين ÷3 والباقي ÷2)</span>
+            <span className="stat-value red" style={{ color: '#f87171' }}>-{totalBarbersPay.toFixed(2)} DH</span>
           </div>
           <div className="stat-card">
             <span className="stat-label">إجمالي إكراميات الحلاقين (تُخصم من الدرج)</span>
@@ -318,17 +337,31 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
           </div>
           <div className="stat-card" style={{ backgroundColor: '#064e3b', border: '1px solid #10b981', gridColumn: 'span 3' }}>
             <span className="stat-label" style={{ color: '#a7f3d0' }}>الصافي النهائي المتبقي للصالون (Laisse Net)</span>
-            <span className="stat-value green" style={{ color: '#34d399', fontSize: '24px' }}>{laisseNetTotal} DH</span>
+            <span className="stat-value green" style={{ color: '#34d399', fontSize: '24px' }}>{laisseNetTotal.toFixed(2)} DH</span>
           </div>
         </div>
       </div>
 
-      <h3 style={{ color: '#fbbf24', marginBottom: '12px' }}>أعمال الحلاقين اليومية (اضغط لتسجيل الإكرامية من الأدمن):</h3>
+      <h3 style={{ color: '#fbbf24', marginBottom: '12px' }}>أعمال الحلاقين اليومية:</h3>
       <div className="barbers-columns-grid">
         {INITIAL_BARBERS.map(barber => {
           const barberTrans = Array.isArray(transactions) ? transactions.filter(t => t.barber === barber.name) : [];
+          
+          // حساب نصيب هذا الحلاق (البروتين على 3 والباقي على 2)
+          let bShare = 0;
+          barberTrans.forEach(t => {
+            const p = Number(t.price) || 0;
+            const isProt = t.serviceName?.toLowerCase().includes('protine') || 
+                           t.serviceName?.toLowerCase().includes('kératine') || 
+                           t.shortName?.toLowerCase().includes('protine');
+            if (isProt) {
+              bShare += p / 3;
+            } else {
+              bShare += p / 2;
+            }
+          });
+
           const bTotal = barberTrans.reduce((acc, curr) => acc + Number(curr.price), 0);
-          const bShare = bTotal / 2;
           const bTips = barberTrans.reduce((acc, curr) => acc + Number(curr.tip || 0), 0);
           const bTotalTake = bShare + bTips;
 
@@ -383,8 +416,8 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
                   <strong>{bTotal} DH</strong>
                 </div>
                 <div className="barber-col-row" style={{ color: '#4ade80' }}>
-                  <span>واجب الحلاق (50%):</span>
-                  <strong>{bShare} DH</strong>
+                  <span>واجب الحلاق:</span>
+                  <strong>{bShare.toFixed(2)} DH</strong>
                 </div>
                 {bTips > 0 && (
                   <div className="barber-col-row" style={{ color: '#fbbf24' }}>
@@ -394,7 +427,7 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
                 )}
                 <div className="barber-col-row" style={{ borderTop: '1px solid #374151', paddingTop: '4px', marginTop: '4px', color: '#fff' }}>
                   <span>المجموع المستلم:</span>
-                  <strong style={{ color: '#fbbf24' }}>{bTotalTake} DH</strong>
+                  <strong style={{ color: '#fbbf24' }}>{bTotalTake.toFixed(2)} DH</strong>
                 </div>
               </div>
             </div>
@@ -448,13 +481,13 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
 
       <div className="laisse-banner">
         <div className="laisse-title">الصافي الكلي المتبقي للصالون (Laisse Net)</div>
-        <div className="laisse-amount">{laisseNetTotal} DH</div>
+        <div className="laisse-amount">{laisseNetTotal.toFixed(2)} DH</div>
         <div style={{ fontSize: '12px', color: '#9ca3af', marginTop: '6px' }}>
-          (إجمالي الصندوق {totalCaisseBeforePay} DH - حصة الحلاقين {totalBarbersPay} DH - الإكراميات {totalTipsToday} DH)
+          (إجمالي الصندوق {totalCaisseBeforePay} DH - حصة الحلاقين {totalBarbersPay.toFixed(2)} DH - الإكراميات {totalTipsToday} DH)
         </div>
       </div>
 
-      {/* أزرار العمليات النهائية (إرسال التقرير عبر واتساب + الإغلاق اليومي) */}
+      {/* أزرار العمليات النهائية */}
       <div style={{ marginTop: '30px', display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
         <button
           onClick={handleShareWhatsApp}
