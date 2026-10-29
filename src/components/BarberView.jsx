@@ -1,27 +1,28 @@
-import React, { useState } from 'react';
-import { MENU_ITEMS } from '../data/initialData';
-import { Scissors, Plus, Trash2, LogOut } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { INITIAL_BARBERS, SERVICES_CATEGORIES } from '../data/initialData';
+import { Scissors, LogOut, CheckCircle, Trash2, Gift } from 'lucide-react';
 import './BarberView.css';
 
 // رابط السيرفر السحابي على Vercel
 const API_URL = 'https://jrstudio-backend.vercel.app';
 
 export default function BarberView({ activeBarber, transactions, setTransactions, onLogout }) {
-  const [customPrice, setCustomPrice] = useState({});
-  const [activeCategory, setActiveCategory] = useState('Service Principal');
+  const [selectedCategory, setSelectedCategory] = useState(SERVICES_CATEGORIES[0]?.name || '');
+  const [customPrices, setCustomPrices] = useState({});
 
-  const categories = [...new Set(MENU_ITEMS.map(item => item.category))];
+  const handleServiceClick = async (service) => {
+    // التحقق من وجود سعر مخصص أو استخدام السعر الافتراضي
+    const priceToUse = customPrices[service.id] !== undefined && customPrices[service.id] !== '' 
+      ? Number(customPrices[service.id]) 
+      : service.price;
 
-  const handleAddService = async (item) => {
-    const price = item.isCustomPrice && customPrice[item.id] ? Number(customPrice[item.id]) : item.price;
-    
     const newTransaction = {
       id: Date.now(),
-      barber: activeBarber.name,
-      serviceName: item.name,
-      shortName: item.shortName,
-      price: price,
-      tip: 0, 
+      barber: activeBarber,
+      serviceName: service.name,
+      shortName: service.shortName,
+      price: priceToUse,
+      tip: 0,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 
@@ -31,61 +32,76 @@ export default function BarberView({ activeBarber, transactions, setTransactions
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newTransaction)
       });
-      
       if (res.ok) {
         const savedTrans = await res.json();
-        // ضمان تحديث الحالة بالبيانات المعادة من السيرفر قاعدة البيانات
-        setTransactions(prev => [savedTrans, ...(Array.isArray(prev) ? prev : [])]);
-      } else {
-        const errorData = await res.json();
-        console.error("Server error response:", errorData);
-        alert("حدث خطأ أثناء حفظ الخدمة في السيرفر!");
+        setTransactions([savedTrans, ...(Array.isArray(transactions) ? transactions : [])]);
+        // تصفير خانة السعر المخصص لهذه الخدمة بعد الإضافة
+        setCustomPrices({ ...customPrices, [service.id]: '' });
       }
     } catch (err) {
       console.error("Error adding transaction:", err);
-      alert("خطأ في الاتصال بالإنترنت أو السيرفر!");
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDeleteTransaction = async (id) => {
     try {
       const res = await fetch(`${API_URL}/api/transactions/${id}`, {
         method: 'DELETE'
       });
       if (res.ok) {
-        setTransactions(prev => (Array.isArray(prev) ? prev.filter(t => t.id !== id) : []));
+        setTransactions((Array.isArray(transactions) ? transactions : []).filter(t => t.id !== id));
       }
     } catch (err) {
       console.error("Error deleting transaction:", err);
     }
   };
 
-  const barberTransactions = Array.isArray(transactions) ? transactions.filter(t => t.barber === activeBarber.name) : [];
-  const barberServicesTotal = barberTransactions.reduce((acc, curr) => acc + Number(curr.price), 0);
-  const barberShare = barberServicesTotal / 2;
-  const barberTotalTips = barberTransactions.reduce((acc, curr) => acc + Number(curr.tip || 0), 0);
-  const totalCashToTake = barberShare + barberTotalTips;
+  // فلترة معاملات الحلاق الحالي فقط
+  const barberTransactions = Array.isArray(transactions) 
+    ? transactions.filter(t => t.barber === activeBarber) 
+    : [];
+
+  const totalServices = barberTransactions.reduce((acc, curr) => acc + Number(curr.price), 0);
+  const totalTips = barberTransactions.reduce((acc, curr) => acc + Number(curr.tip || 0), 0);
+
+  // --- حساب حصة الحلاق بدقة (البروتين/Prot على 3 والباقي على 2) ---
+  let barberShare = 0;
+  barberTransactions.forEach(t => {
+    const p = Number(t.price) || 0;
+    const sName = (t.serviceName || '').toLowerCase();
+    const sShort = (t.shortName || '').toLowerCase();
+    const isProt = sName.includes('prot') || sName.includes('kératine') || 
+                   sShort.includes('prot') || sShort.includes('kératine');
+    if (isProt) {
+      barberShare += p / 3;
+    } else {
+      barberShare += p / 2;
+    }
+  });
+
+  const totalTake = barberShare + totalTips;
+
+  const currentCatObj = SERVICES_CATEGORIES.find(c => c.name === selectedCategory) || SERVICES_CATEGORIES[0];
 
   return (
     <div className="jr-container">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-        <h2 className="jr-title" style={{ margin: 0 }}>
-          <Scissors size={24} /> مرحباً، {activeBarber.name} 👋
+        <h2 className="jr-title">
+          <Scissors size={24} /> الحلاق: <span style={{ color: '#fff' }}>{activeBarber}</span>
         </h2>
-        
         <button 
-          onClick={onLogout} 
-          style={{ 
-            backgroundColor: '#ef4444', 
-            color: '#fff', 
-            border: 'none', 
-            padding: '8px 14px', 
-            borderRadius: '6px', 
+          onClick={onLogout}
+          style={{
+            backgroundColor: '#ef4444',
+            color: '#fff',
+            border: 'none',
+            padding: '8px 14px',
+            borderRadius: '8px',
             cursor: 'pointer',
+            fontWeight: 'bold',
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
-            fontWeight: 'bold',
+            gap: '5px',
             fontSize: '13px'
           }}
         >
@@ -94,101 +110,99 @@ export default function BarberView({ activeBarber, transactions, setTransactions
       </div>
 
       <div className="jr-grid">
+        {/* قسم الخدمات والأزرار */}
         <div className="jr-card">
-          <h3 className="jr-card-title">اختر الخدمة المقدمة</h3>
-          
+          <div className="jr-card-title">اختر الخدمة المقدمة:</div>
+
+          {/* شريط الفئات */}
           <div className="categories-bar">
-            {categories.map(cat => (
+            {SERVICES_CATEGORIES.map(cat => (
               <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`cat-btn ${activeCategory === cat ? 'active' : ''}`}
+                key={cat.name}
+                className={`cat-btn ${selectedCategory === cat.name ? 'active' : ''}`}
+                onClick={() => setSelectedCategory(cat.name)}
               >
-                {cat}
+                {cat.name}
               </button>
             ))}
           </div>
 
+          {/* شبكة الخدمات */}
           <div className="services-grid">
-            {MENU_ITEMS.filter(item => item.category === activeCategory).map(item => (
-              <div key={item.id} className="service-box" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <div>
-                    <span className="service-badge">{item.shortName}</span>
-                    <div className="service-name">{item.name}</div>
-                    <div className="service-price">{item.price} DH</div>
-                  </div>
-
-                  {item.isCustomPrice && (
-                    <input
-                      type="number"
-                      placeholder="الثمن"
-                      className="custom-price-input"
-                      style={{ width: '70px' }}
-                      onChange={(e) => setCustomPrice({ ...customPrice, [item.id]: e.target.value })}
-                    />
-                  )}
+            {currentCatObj?.services.map(service => (
+              <div key={service.id} className="service-box">
+                <div>
+                  <span className="service-badge">{service.shortName}</span>
+                  <div className="service-name">{service.name}</div>
+                  <div className="service-price">{service.price} DH</div>
                 </div>
 
-                <button onClick={() => handleAddService(item)} className="add-btn" style={{ width: '100%', marginTop: '4px' }}>
-                  <Plus size={14} style={{ display: 'inline' }} /> تسجيل الخدمة
-                </button>
+                <div>
+                  <input
+                    type="number"
+                    placeholder="سعر مخصص"
+                    value={customPrices[service.id] !== undefined ? customPrices[service.id] : ''}
+                    onChange={(e) => setCustomPrices({ ...customPrices, [service.id]: e.target.value })}
+                    className="custom-price-input"
+                  />
+                  <button 
+                    onClick={() => handleServiceClick(service)}
+                    className="add-btn"
+                  >
+                    إضافة
+                  </button>
+                </div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="jr-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          <div>
-            <h3 className="jr-card-title">سجلك اليومي ({activeBarber.name})</h3>
-
-            <div className="transactions-list">
-              {barberTransactions.length === 0 ? (
-                <p className="no-trans">لم تسجل أي خدمة بعد اليوم.</p>
-              ) : (
-                barberTransactions.map(t => (
-                  <div key={t.id} className="transaction-item" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '4px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div>
-                        <span className="trans-short">{t.shortName}</span>
-                        <span className="trans-time">({t.time})</span>
-                      </div>
-                      <div className="trans-price-del">
-                        <span style={{ fontWeight: 'bold' }}>{t.price} DH</span>
-                        <button onClick={() => handleDelete(t.id)} className="delete-btn">
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </div>
-                    {Number(t.tip) > 0 && (
-                      <div style={{ fontSize: '12px', color: '#fbbf24', display: 'flex', alignItems: 'center', gap: '4px', background: '#111827', padding: '2px 6px', borderRadius: '4px', width: 'fit-content' }}>
-                        🎁 إكرامية مسجلة من الإدارة: +{t.tip} DH
-                      </div>
-                    )}
+        {/* قسم الحساب اليومي الخاص بالحلاق */}
+        <div className="jr-card">
+          <div className="jr-card-title">سجل العمليات وحسابك اليومي:</div>
+          
+          <div className="transactions-list">
+            {barberTransactions.length === 0 ? (
+              <div className="no-trans">لم تقم بتسجيل أي خدمة اليوم بعد.</div>
+            ) : (
+              barberTransactions.map(t => (
+                <div key={t.id} className="transaction-item">
+                  <div>
+                    <span className="trans-short">{t.shortName}</span>
+                    <span className="trans-time">({t.time})</span>
+                    <div style={{ fontSize: '11px', color: '#d1d5db' }}>{t.serviceName}</div>
                   </div>
-                ))
-              )}
-            </div>
+                  <div className="trans-price-del">
+                    <span style={{ color: '#fbbf24', fontWeight: 'bold' }}>{t.price} DH</span>
+                    {t.tip > 0 && <span style={{ color: '#34d399', fontSize: '11px' }}>(Tip: {t.tip})</span>}
+                    <button onClick={() => handleDeleteTransaction(t.id)} className="delete-btn">
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
 
+          {/* الإجماليات */}
           <div className="totals-box">
             <div className="total-row">
               <span>مجموع الخدمات:</span>
-              <span>{barberServicesTotal} DH</span>
+              <strong>{totalServices} DH</strong>
             </div>
-            <div className="total-row">
-              <span>حصتك من الخدمات (50%):</span>
-              <span style={{ color: '#4ade80' }}>{barberShare} DH</span>
+            <div className="total-row" style={{ color: '#4ade80' }}>
+              <span>واجب الحلاق (بروتين ÷3 والباقي ÷2):</span>
+              <strong>{barberShare.toFixed(2)} DH</strong>
             </div>
-            {barberTotalTips > 0 && (
+            {totalTips > 0 && (
               <div className="total-row" style={{ color: '#fbbf24' }}>
-                <span>إجمالي الإكراميات (Pourboires):</span>
-                <span>+{barberTotalTips} DH</span>
+                <span>إجمالي الإكراميات (Tips):</span>
+                <strong>+{totalTips} DH</strong>
               </div>
             )}
-            <div className="final-row" style={{ borderTop: '1px dashed #374151', paddingTop: '8px', marginTop: '4px' }}>
-              <span>ما ستستلمه اليوم:</span>
-              <span style={{ color: '#fbbf24', fontSize: '18px' }}>{totalCashToTake} DH</span>
+            <div className="final-row" style={{ marginTop: '8px', borderTop: '1px solid #374151', paddingTop: '6px' }}>
+              <span>المجموع المستلم لك:</span>
+              <span style={{ color: '#fbbf24' }}>{totalTake.toFixed(2)} DH</span>
             </div>
           </div>
         </div>
