@@ -1,8 +1,9 @@
-/* تصميم واجهة الحلاق - JR Studio */
+/* تصميم واجهة الحلاق - JR Studio (مخصص للهواتف والشاشات) */
 .jr-container {
-  max-width: 1100px;
+  width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 15px;
+  padding: 12px;
   background-color: #111827;
   color: #f3f4f6;
   min-height: 100vh;
@@ -11,10 +12,10 @@
 }
 
 .jr-title {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: bold;
   color: #fbbf24;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -23,10 +24,10 @@
 /* شريط الحلاقين */
 .barbers-bar {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   overflow-x: auto;
-  padding-bottom: 10px;
-  margin-bottom: 15px;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -34,44 +35,44 @@
   background-color: #1f2937;
   color: #d1d5db;
   border: 1px solid #374151;
-  padding: 8px 16px;
+  padding: 8px 14px;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
   white-space: nowrap;
-  transition: all 0.2s;
-}
-
-.barber-btn:hover {
-  background-color: #374151;
+  font-size: 13px;
 }
 
 .barber-btn.active {
   background-color: #fbbf24;
   color: #111827;
   border-color: #fbbf24;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
-/* التخطيط الرئيسي (جنب لجنب على الحاسوب، وتحت بعض على الهاتف) */
+/* التخطيط الرئيسي: عمود واحد على الهواتف، وعمودين على الشاشات الكبيرة */
 .jr-grid {
   display: grid;
-  grid-template-columns: 1.4fr 1fr;
+  grid-template-columns: 1fr;
   gap: 16px;
-  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .jr-grid {
+    grid-template-columns: 1.2fr 1fr;
+    gap: 20px;
+  }
 }
 
 .jr-card {
   background-color: #1f2937;
   border: 1px solid #374151;
-  border-radius: 12px;
-  padding: 16px;
+  border-radius: 14px;
+  padding: 14px;
   box-sizing: border-box;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .jr-card-title {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   color: #fde047;
   margin-bottom: 12px;
@@ -79,13 +80,13 @@
   padding-bottom: 8px;
 }
 
-/* فئات الخدمات */
+/* فئات الخدمات (Categories) */
 .categories-bar {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   overflow-x: auto;
   padding-bottom: 8px;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -93,13 +94,12 @@
   background-color: #374151;
   color: #9ca3af;
   border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
+  padding: 7px 12px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 12px;
   white-space: nowrap;
   font-weight: 500;
-  transition: all 0.2s;
 }
 
 .cat-btn.active {
@@ -107,7 +107,7 @@
   color: #ffffff;
 }
 
-/* شبكة أزرار الخدمات المتجاوبة للهواتف */
+/* شبكة أزرار الخدمات: عمودين مريحين للمس على الهواتف */
 .services-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -118,7 +118,7 @@
   background-color: #111827;
   border: 1px solid #374151;
   border-radius: 10px;
-  padding: 12px;
+  padding: 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -128,26 +128,26 @@
 .service-badge {
   background-color: #1f2937;
   color: #fbbf24;
-  font-size: 10px;
-  padding: 2px 6px;
+  font-size: 9px;
+  padding: 2px 5px;
   border-radius: 4px;
   font-family: monospace;
   display: inline-block;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .service-name {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   color: #ffffff;
-  line-height: 1.3;
+  line-height: 1.2;
 }
 
 .service-price {
   color: #fde047;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 13px;
   margin-bottom: 8px;
 }
 
@@ -156,10 +156,10 @@
   background-color: #1f2937;
   border: 1px solid #4b5563;
   color: #fff;
-  padding: 8px;
-  font-size: 13px;
+  padding: 7px;
+  font-size: 12px;
   border-radius: 6px;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   box-sizing: border-box;
   text-align: center;
 }
@@ -169,26 +169,24 @@
   color: #111827;
   border: none;
   font-weight: bold;
-  font-size: 13px;
-  padding: 10px;
+  font-size: 12px;
+  padding: 9px;
   border-radius: 6px;
   cursor: pointer;
   width: 100%;
-  transition: background-color 0.2s;
 }
 
-.add-btn:hover {
-  background-color: #f59e0b;
+.add-btn:active {
+  background-color: #d97706;
 }
 
 /* قائمة السجل اليومي */
 .transactions-list {
-  max-height: 250px;
+  max-height: 220px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding-right: 4px;
 }
 
 .transaction-item {
@@ -208,15 +206,15 @@
 }
 
 .trans-time {
-  font-size: 11px;
+  font-size: 10px;
   color: #9ca3af;
-  margin-left: 6px;
+  margin-left: 4px;
 }
 
 .trans-price-del {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .delete-btn {
@@ -224,25 +222,24 @@
   border: none;
   color: #f87171;
   cursor: pointer;
-  font-size: 16px;
   padding: 4px;
 }
 
 .no-trans {
   color: #9ca3af;
   text-align: center;
-  font-size: 13px;
-  padding: 20px;
+  font-size: 12px;
+  padding: 15px;
 }
 
 /* الحسابات النهائية */
 .totals-box {
-  margin-top: 15px;
-  padding-top: 12px;
+  margin-top: 14px;
+  padding-top: 10px;
   border-top: 1px solid #374151;
   background-color: #111827;
   padding: 12px;
-  border-radius: 8px;
+  border-radius: 10px;
 }
 
 .total-row {
@@ -256,42 +253,10 @@
 .final-row {
   display: flex;
   justify-content: space-between;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: bold;
   color: #fbbf24;
-}
-
-/* --- تحسينات دقيقة للتجاوب التام مع الهواتف الذكية --- */
-@media (max-width: 768px) {
-  .jr-container {
-    padding: 10px !important;
-  }
-
-  .jr-grid {
-    grid-template-columns: 1fr !important;
-    gap: 14px !important;
-  }
-
-  .services-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 8px !important;
-  }
-
-  .service-box {
-    padding: 10px !important;
-  }
-
-  .jr-title {
-    font-size: 19px !important;
-  }
-
-  .custom-price-input {
-    padding: 6px !important;
-    font-size: 12px !important;
-  }
-
-  .add-btn {
-    padding: 8px !important;
-    font-size: 12px !important;
-  }
+  margin-top: 6px;
+  border-top: 1px solid #374151;
+  padding-top: 6px;
 }
