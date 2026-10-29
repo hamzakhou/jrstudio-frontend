@@ -83,20 +83,24 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
     }
   };
 
-  const totalServicesToday = Array.isArray(transactions) ? transactions.reduce((acc, curr) => acc + Number(curr.price), 0) : 0;
-  const totalTipsToday = Array.isArray(transactions) ? transactions.reduce((acc, curr) => acc + Number(curr.tip || 0), 0) : 0;
+  // --- حساب مدخول خدمات اليوم للحلاقين المعتمدين فقط ---
+  const validBarberNames = INITIAL_BARBERS.map(b => b.name);
+  const validTransactions = Array.isArray(transactions) 
+    ? transactions.filter(t => validBarberNames.includes(t.barber))
+    : [];
+
+  const totalServicesToday = validTransactions.reduce((acc, curr) => acc + Number(curr.price), 0);
+  const totalTipsToday = validTransactions.reduce((acc, curr) => acc + Number(curr.tip || 0), 0);
   const yesterdayAmount = Number(yesterdayCaisse) || 0;
   const totalExpenses = Array.isArray(expenses) ? expenses.reduce((acc, curr) => acc + Number(curr.amount), 0) : 0;
 
   // --- حساب إجمالي الصندوق (Caisse Brut) بدقة ---
-  // الخدمات + الإكراميات + صندوق الأمس - المصاريف
   const totalCaisseBeforePay = totalServicesToday + totalTipsToday + yesterdayAmount - totalExpenses;
 
-  // --- حساب حصة الحلاقين بدقة (أي خدمة تحتوي على prot أو kératine أو بروتين تُقسم على 3 والباقي على 2) ---
+  // --- حساب حصة الحلاقين بدقة (البروتين ÷3 والباقي ÷2) ---
   const calculateBarbersTotalPay = () => {
-    if (!Array.isArray(transactions)) return 0;
     let totalPay = 0;
-    transactions.forEach(t => {
+    validTransactions.forEach(t => {
       const price = Number(t.price) || 0;
       const sName = (t.serviceName || '').toLowerCase();
       const sShort = (t.shortName || '').toLowerCase();
@@ -105,9 +109,9 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
                         sShort.includes('prot') || sShort.includes('kératine') || sShort.includes('cls') || sShort.includes('بروتين');
       
       if (isProtein) {
-        totalPay += price / 3; // البروتين يُقسم على 3
+        totalPay += price / 3;
       } else {
-        totalPay += price / 2; // باقي الخدمات على 2
+        totalPay += price / 2;
       }
     });
     return totalPay;
@@ -116,7 +120,6 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
   const totalBarbersPay = calculateBarbersTotalPay();
   
   // --- الصافي الحقيقي للصالون (Laisse Net) ---
-  // إجمالي الصندوق - حصة الحلاقين - الإكراميات (التي تُدفع من الصندوق)
   const laisseNetTotal = totalCaisseBeforePay - totalBarbersPay - totalTipsToday;
 
   const handleAddExpense = async (e) => {
@@ -159,7 +162,6 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
     }
   };
 
-  // دالة إرسال التقرير عبر واتساب
   const handleShareWhatsApp = () => {
     const todayStr = new Date().toLocaleDateString('fr-FR');
     
@@ -349,7 +351,7 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
       <h3 style={{ color: '#fbbf24', marginBottom: '12px' }}>أعمال الحلاقين اليومية:</h3>
       <div className="barbers-columns-grid">
         {INITIAL_BARBERS.map(barber => {
-          const barberTrans = Array.isArray(transactions) ? transactions.filter(t => t.barber === barber.name) : [];
+          const barberTrans = validTransactions.filter(t => t.barber === barber.name);
           
           let bShare = 0;
           barberTrans.forEach(t => {
