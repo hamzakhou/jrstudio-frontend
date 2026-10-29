@@ -1,9 +1,8 @@
-/* تصميم متجاوب واحترافي 100% لواجهة الحلاق - JR Studio */
 .jr-container {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 10px;
+  padding: 8px;
   background-color: #111827;
   color: #f3f4f6;
   min-height: 100vh;
@@ -15,15 +14,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   background-color: #1f2937;
-  padding: 10px 14px;
-  border-radius: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
   border: 1px solid #374151;
 }
 
 .jr-title {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: bold;
   color: #fbbf24;
   margin: 0;
@@ -40,69 +39,67 @@
   background-color: #ef4444;
   color: #ffffff;
   border: none;
-  padding: 6px 12px;
+  padding: 5px 10px;
   border-radius: 6px;
   cursor: pointer;
   font-weight: bold;
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 12px;
+  font-size: 11px;
 }
 
-/* التخطيط الهيكلي */
 .jr-grid {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
 .jr-card {
   background-color: #1f2937;
   border: 1px solid #374151;
-  border-radius: 12px;
-  padding: 12px;
+  border-radius: 10px;
+  padding: 10px;
   box-sizing: border-box;
 }
 
 .jr-card-title {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #fde047;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   border-bottom: 1px solid #374151;
-  padding-bottom: 6px;
+  padding-bottom: 5px;
 }
 
-/* شريط فئات الخدمات (تم جعله يلتف بشكل أنيق ومريح للأصابع بدلاً من التمرير الطويل المزعج) */
-.categories-bar {
+/* تنسيق القائمة المنسدلة الذكية للهواتف */
+.category-dropdown-container {
+  margin-bottom: 10px;
+}
+
+.dropdown-label {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 12px;
-}
-
-.cat-btn {
-  background-color: #111827;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
   color: #9ca3af;
-  border: 1px solid #374151;
-  padding: 6px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 11px;
-  font-weight: 500;
-  flex: 1 1 auto;
-  text-align: center;
-  white-space: nowrap;
+  margin-bottom: 4px;
 }
 
-.cat-btn.active {
-  background-color: #d97706;
-  color: #ffffff;
-  border-color: #d97706;
+.category-select {
+  width: 100%;
+  background-color: #111827;
+  border: 1px solid #4b5563;
+  color: #fbbf24;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 8px;
+  outline: none;
+  box-sizing: border-box;
 }
 
-/* شبكة أزرار الخدمات: عمودين متناسقين تماماً على الهواتف */
+/* شبكة أزرار الخدمات */
 .services-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -117,7 +114,6 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-sizing: border-box;
 }
 
 .service-badge {
@@ -128,13 +124,13 @@
   border-radius: 4px;
   font-family: monospace;
   display: inline-block;
-  margin-bottom: 3px;
+  margin-bottom: 2px;
 }
 
 .service-name {
   font-size: 11px;
   font-weight: 600;
-  margin-bottom: 3px;
+  margin-bottom: 2px;
   color: #ffffff;
   line-height: 1.1;
 }
@@ -146,6 +142,12 @@
   margin-bottom: 6px;
 }
 
+.service-action-area {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .custom-price-input {
   width: 100%;
   background-color: #1f2937;
@@ -154,9 +156,8 @@
   padding: 5px;
   font-size: 11px;
   border-radius: 4px;
-  margin-bottom: 5px;
-  box-sizing: border-box;
   text-align: center;
+  box-sizing: border-box;
 }
 
 .add-btn {
@@ -171,9 +172,9 @@
   width: 100%;
 }
 
-/* قائمة السجل اليومي */
+/* السجل اليومي */
 .transactions-list {
-  max-height: 200px;
+  max-height: 180px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -231,24 +232,24 @@
   color: #9ca3af;
   text-align: center;
   font-size: 11px;
-  padding: 15px;
+  padding: 12px;
 }
 
-/* صندوق الإجماليات النهائي */
+/* الإجماليات */
 .totals-box {
-  margin-top: 10px;
-  padding-top: 8px;
+  margin-top: 8px;
+  padding-top: 6px;
   border-top: 1px solid #374151;
   background-color: #111827;
-  padding: 10px;
-  border-radius: 8px;
+  padding: 8px;
+  border-radius: 6px;
 }
 
 .total-row {
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
-  margin-bottom: 4px;
+  font-size: 11px;
+  margin-bottom: 3px;
   color: #9ca3af;
 }
 
@@ -264,32 +265,23 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: bold;
   color: #ffffff;
-  margin-top: 6px;
+  margin-top: 5px;
   border-top: 1px solid #374151;
-  padding-top: 6px;
+  padding-top: 5px;
 }
 
 .final-price {
   color: #fbbf24;
-  font-size: 16px;
+  font-size: 15px;
 }
 
-/* التكيف مع شاشات الحاسوب الكبيرة */
+/* للشاشات الكبيرة */
 @media (min-width: 900px) {
   .jr-grid {
     grid-template-columns: 1.3fr 1fr;
     gap: 16px;
-  }
-  
-  .categories-bar {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-  }
-  
-  .cat-btn {
-    flex: unset;
   }
 }

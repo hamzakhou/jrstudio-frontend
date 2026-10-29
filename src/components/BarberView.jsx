@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { INITIAL_BARBERS, SERVICES_CATEGORIES } from '../data/initialData';
-import { Scissors, LogOut, Trash2, Gift } from 'lucide-react';
+import { Scissors, LogOut, Trash2, Menu } from 'lucide-react';
 import './BarberView.css';
 
 const API_URL = 'https://jrstudio-backend.vercel.app';
@@ -60,7 +60,6 @@ export default function BarberView({ activeBarber, transactions, setTransactions
   const totalServices = barberTransactions.reduce((acc, curr) => acc + Number(curr.price), 0);
   const totalTips = barberTransactions.reduce((acc, curr) => acc + Number(curr.tip || 0), 0);
 
-  // --- حساب حصة الحلاق بدقة (البروتين / Prot على 3 والباقي على 2) ---
   let barberShare = 0;
   barberTransactions.forEach(t => {
     const p = Number(t.price) || 0;
@@ -84,27 +83,32 @@ export default function BarberView({ activeBarber, transactions, setTransactions
     <div className="jr-container">
       <div className="barber-header-bar">
         <h2 className="jr-title">
-          <Scissors size={22} /> مرحباً، <span className="barber-name-highlight">{activeBarber}</span>
+          <Scissors size={20} /> مرحباً، <span className="barber-name-highlight">{activeBarber}</span>
         </h2>
         <button onClick={onLogout} className="barber-logout-btn">
-          <LogOut size={16} /> خروج
+          <LogOut size={14} /> خروج
         </button>
       </div>
 
       <div className="jr-grid">
+        {/* قسم اختيار الفئة والخدمات */}
         <div className="jr-card">
           <div className="jr-card-title">اختر الخدمة المقدمة</div>
 
-          <div className="categories-bar">
-            {SERVICES_CATEGORIES.map(cat => (
-              <button
-                key={cat.name}
-                className={`cat-btn ${selectedCategory === cat.name ? 'active' : ''}`}
-                onClick={() => setSelectedCategory(cat.name)}
-              >
-                {cat.name}
-              </button>
-            ))}
+          {/* فكرة القائمة المنسدلة الذكية بدلاً من الأزرار الطويلة */}
+          <div className="category-dropdown-container">
+            <label className="dropdown-label"><Menu size={14} /> تصنيف الخدمات:</label>
+            <select 
+              className="category-select"
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+            >
+              {SERVICES_CATEGORIES.map(cat => (
+                <option key={cat.name} value={cat.name}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="services-grid">
@@ -116,7 +120,7 @@ export default function BarberView({ activeBarber, transactions, setTransactions
                   <div className="service-price">{service.price} DH</div>
                 </div>
 
-                <div>
+                <div className="service-action-area">
                   <input
                     type="number"
                     placeholder="سعر مخصص"
@@ -125,7 +129,7 @@ export default function BarberView({ activeBarber, transactions, setTransactions
                     className="custom-price-input"
                   />
                   <button onClick={() => handleServiceClick(service)} className="add-btn">
-                    تسجيل الخدمة +
+                    إضافة +
                   </button>
                 </div>
               </div>
@@ -133,6 +137,7 @@ export default function BarberView({ activeBarber, transactions, setTransactions
           </div>
         </div>
 
+        {/* السجل والحسابات اليومية */}
         <div className="jr-card">
           <div className="jr-card-title">سجلك اليومي ({activeBarber})</div>
           
