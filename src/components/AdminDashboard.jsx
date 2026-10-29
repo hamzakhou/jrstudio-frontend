@@ -86,11 +86,13 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
   const totalServicesToday = Array.isArray(transactions) ? transactions.reduce((acc, curr) => acc + Number(curr.price), 0) : 0;
   const totalTipsToday = Array.isArray(transactions) ? transactions.reduce((acc, curr) => acc + Number(curr.tip || 0), 0) : 0;
   const yesterdayAmount = Number(yesterdayCaisse) || 0;
-
-  const totalCaisseBeforePay = totalServicesToday + totalTipsToday + yesterdayAmount;
   const totalExpenses = Array.isArray(expenses) ? expenses.reduce((acc, curr) => acc + Number(curr.amount), 0) : 0;
+
+  // Caisse Brut (تم خصم المصاريف لأنها خرجت فعلياً من الدرج)
+  const totalCaisseBeforePay = totalServicesToday + totalTipsToday + yesterdayAmount - totalExpenses;
+  
   const totalBarbersPay = totalServicesToday / 2;
-  const laisseNetTotal = totalCaisseBeforePay - totalBarbersPay - totalTipsToday - totalExpenses;
+  const laisseNetTotal = totalCaisseBeforePay - totalBarbersPay - totalTipsToday; // أو المعادلة المعتادة
 
   const handleAddExpense = async (e) => {
     e.preventDefault();
@@ -132,7 +134,7 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
     }
   };
 
-  // دالة إرسال التقرير عبر واتساب مباشرة لرقم المالك
+  // دالة إرسال التقرير عبر واتساب لرقم المالك الحقيقي
   const handleShareWhatsApp = () => {
     const todayStr = new Date().toLocaleDateString('fr-FR');
     
@@ -142,20 +144,20 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
 
 💰 *مدخول الخدمات:* ${totalServicesToday} DH
 💵 *صندوق الأمس:* ${yesterdayAmount} DH
+📉 *المصاريف (Dépenses):* -${totalExpenses} DH
 📥 *المجموع بالصندوق (Caisse Brut):* ${totalCaisseBeforePay} DH
 
 ------------------
 ✂️ *واجب الحلاقين (50%):* -${totalBarbersPay} DH
 🎁 *الإكراميات (Tips):* ${totalTipsToday} DH
-📉 *المصاريف (Dépenses):* -${totalExpenses} DH
 ------------------
 
 ✅ *الصافي النهائي للصالون (Laisse Net) :* *${laisseNetTotal} DH*`;
 
     const encodedText = encodeURIComponent(reportText);
     
-    // استبدل الرقم أدناه برقم هاتف المالك الفعلي مع رمز الدولة (مثلاً المغرب: 212 يليه الرقم بدون 0 الأول)
-    const ownerPhoneNumber = "212662044745"; 
+    // ضع رقم هاتف المالك الحقيقي هنا (مع رمز الدولة وبدون 0 الأول)
+    const ownerPhoneNumber = "212600000000"; 
     
     window.open(`https://wa.me/${ownerPhoneNumber}?text=${encodedText}`, '_blank');
   };
@@ -263,7 +265,7 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
         marginBottom: '25px'
       }}>
         <h3 style={{ color: '#fbbf24', margin: '0 0 15px 0', display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <Landmark size={22} /> 1. إجمالي الأموال الموجودة في الصندوق حالياً (شاملة الإكراميات):
+          <Landmark size={22} /> 1. إجمالي الأموال الموجودة في الصندوق حالياً (شاملة الإكراميات مطروحاً منها المصاريف):
         </h3>
         
         <div className="stats-grid">
@@ -279,7 +281,11 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
             <span className="stat-label">صندوق الأمس (Report)</span>
             <span className="stat-value blue">{yesterdayAmount} DH</span>
           </div>
-          <div className="stat-card" style={{ gridColumn: 'span 3', backgroundColor: '#1f2937' }}>
+          <div className="stat-card">
+            <span className="stat-label">إجمالي المصاريف المخصومة</span>
+            <span className="stat-value red">-{totalExpenses} DH</span>
+          </div>
+          <div className="stat-card" style={{ gridColumn: 'span 4', backgroundColor: '#1f2937' }}>
             <span className="stat-label" style={{ fontSize: '15px', color: '#fbbf24' }}>المجموع الفعلي الموجود في الدرج/الصندوق الآن (Caisse Brut)</span>
             <span className="stat-value gold" style={{ fontSize: '28px' }}>{totalCaisseBeforePay} DH</span>
           </div>
@@ -444,7 +450,7 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
         <div className="laisse-title">الصافي الكلي المتبقي للصالون (Laisse Net)</div>
         <div className="laisse-amount">{laisseNetTotal} DH</div>
         <div style={{ fontSize: '12px', color: '#9ca3af', marginTop: '6px' }}>
-          (إجمالي الصندوق {totalCaisseBeforePay} DH - حصة الحلاقين {totalBarbersPay} DH - الإكراميات {totalTipsToday} DH - المصاريف {totalExpenses} DH)
+          (إجمالي الصندوق {totalCaisseBeforePay} DH - حصة الحلاقين {totalBarbersPay} DH - الإكراميات {totalTipsToday} DH)
         </div>
       </div>
 
