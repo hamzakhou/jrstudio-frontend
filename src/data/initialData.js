@@ -23,7 +23,7 @@ export const INITIAL_BARBERS = [
   { id: 'ismail', name: 'Ismail', pin: '1111' },
   { id: 'mustapha', name: 'Mustapha', pin: '2222' },
   { id: 'salah', name: 'Salah', pin: '3333' },
-  { id: 'bilhal', name: 'Bilhal', pin: '4444' },
+  { id: 'bilal', name: 'Bilal', pin: '4444' },
   { id: 'yassin', name: 'Yassin', pin: '5555' }
 ];
 
