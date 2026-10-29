@@ -13,7 +13,6 @@ export default function App() {
   const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [adminError, setAdminError] = useState('');
 
-  // حالات خاصة بواجهة الحلاق لضمان ظهور التصميم الجديد مباشرة
   const [selectedCategory, setSelectedCategory] = useState(SERVICES_CATEGORIES[0]?.name || '');
   const [customPrices, setCustomPrices] = useState({});
 
@@ -45,7 +44,15 @@ export default function App() {
     }
   };
 
-  // دوال الحلاق
+  // استخراج اسم الحلاق بشكل آمن سواء كان نصاً أو كائناً
+  const getBarberName = (user) => {
+    if (!user) return '';
+    if (typeof user === 'object') return user.name || user.id || '';
+    return user;
+  };
+
+  const activeBarberName = getBarberName(currentUser);
+
   const handleServiceClick = async (service) => {
     const priceToUse = customPrices[service.id] !== undefined && customPrices[service.id] !== '' 
       ? Number(customPrices[service.id]) 
@@ -53,7 +60,7 @@ export default function App() {
 
     const newTransaction = {
       id: Date.now(),
-      barber: currentUser,
+      barber: activeBarberName,
       serviceName: service.name,
       shortName: service.shortName,
       price: priceToUse,
@@ -91,7 +98,7 @@ export default function App() {
   };
 
   const barberTransactions = Array.isArray(transactions) && currentUser && currentUser !== 'admin'
-    ? transactions.filter(t => t.barber === currentUser) 
+    ? transactions.filter(t => t.barber === activeBarberName) 
     : [];
 
   const totalServices = barberTransactions.reduce((acc, curr) => acc + Number(curr.price), 0);
@@ -169,12 +176,11 @@ export default function App() {
         </div>
       )}
 
-      {/* واجهة الحلاق بالتصميم الجديد والقائمة المنسدلة */}
       {currentUser && currentUser !== 'admin' && (
         <div className="jr-container" style={{ padding: '12px', maxWidth: '1200px', margin: '0 auto', fontFamily: 'system-ui' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', backgroundColor: '#1f2937', padding: '10px 14px', borderRadius: '10px', border: '1px solid #374151' }}>
             <h2 style={{ fontSize: '17px', fontWeight: 'bold', color: '#fbbf24', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Scissors size={20} /> مرحباً، <span style={{ color: '#fff' }}>{currentUser}</span>
+              <Scissors size={20} /> مرحباً، <span style={{ color: '#fff' }}>{activeBarberName}</span>
             </h2>
             <button onClick={() => setCurrentUser(null)} style={{ backgroundColor: '#ef4444', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
               <LogOut size={14} /> خروج
@@ -229,7 +235,7 @@ export default function App() {
 
             {/* السجل والحسابات */}
             <div style={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '12px', padding: '12px' }}>
-              <div style={{ fontSize: '14px', fontWeight: '600', color: '#fde047', marginBottom: '10px', borderBottom: '1px solid #374151', paddingBottom: '6px' }}>سجلك اليومي ({currentUser})</div>
+              <div style={{ fontSize: '14px', fontWeight: '600', color: '#fde047', marginBottom: '10px', borderBottom: '1px solid #374151', paddingBottom: '6px' }}>سجلك اليومي ({activeBarberName})</div>
               
               <div style={{ maxHeight: '180px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 {barberTransactions.length === 0 ? (
