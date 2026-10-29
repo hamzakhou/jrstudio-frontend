@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { INITIAL_BARBERS, SERVICES_CATEGORIES } from '../data/initialData';
-import { Scissors, LogOut, CheckCircle, Trash2, Gift } from 'lucide-react';
+import { Scissors, LogOut, Trash2, Gift } from 'lucide-react';
 import './BarberView.css';
 
-// رابط السيرفر السحابي على Vercel
 const API_URL = 'https://jrstudio-backend.vercel.app';
 
 export default function BarberView({ activeBarber, transactions, setTransactions, onLogout }) {
@@ -11,7 +10,6 @@ export default function BarberView({ activeBarber, transactions, setTransactions
   const [customPrices, setCustomPrices] = useState({});
 
   const handleServiceClick = async (service) => {
-    // التحقق من وجود سعر مخصص أو استخدام السعر الافتراضي
     const priceToUse = customPrices[service.id] !== undefined && customPrices[service.id] !== '' 
       ? Number(customPrices[service.id]) 
       : service.price;
@@ -55,7 +53,6 @@ export default function BarberView({ activeBarber, transactions, setTransactions
     }
   };
 
-  // فلترة معاملات الحلاق الحالي فقط
   const barberTransactions = Array.isArray(transactions) 
     ? transactions.filter(t => t.barber === activeBarber) 
     : [];
@@ -63,14 +60,13 @@ export default function BarberView({ activeBarber, transactions, setTransactions
   const totalServices = barberTransactions.reduce((acc, curr) => acc + Number(curr.price), 0);
   const totalTips = barberTransactions.reduce((acc, curr) => acc + Number(curr.tip || 0), 0);
 
-  // --- حساب حصة الحلاق بدقة (شامل للبروتين والـ Prot Cls على 3، والباقي على 2) ---
+  // --- حساب حصة الحلاق بدقة (البروتين / Prot على 3 والباقي على 2) ---
   let barberShare = 0;
   barberTransactions.forEach(t => {
     const p = Number(t.price) || 0;
     const sName = (t.serviceName || '').toLowerCase();
     const sShort = (t.shortName || '').toLowerCase();
     
-    // شرط مرن يشمل prot, kératine, cls, بروتين
     const isProtein = sName.includes('prot') || sName.includes('kératine') || sName.includes('cls') || sName.includes('بروتين') ||
                       sShort.includes('prot') || sShort.includes('kératine') || sShort.includes('cls') || sShort.includes('بروتين');
     
@@ -82,15 +78,13 @@ export default function BarberView({ activeBarber, transactions, setTransactions
   });
 
   const totalTake = barberShare + totalTips;
-
   const currentCatObj = SERVICES_CATEGORIES.find(c => c.name === selectedCategory) || SERVICES_CATEGORIES[0];
 
   return (
     <div className="jr-container">
-      {/* الهيدر العلوي */}
       <div className="barber-header-bar">
         <h2 className="jr-title">
-          <Scissors size={22} /> الحلاق: <span className="barber-name-highlight">{activeBarber}</span>
+          <Scissors size={22} /> مرحباً، <span className="barber-name-highlight">{activeBarber}</span>
         </h2>
         <button onClick={onLogout} className="barber-logout-btn">
           <LogOut size={16} /> خروج
@@ -98,11 +92,9 @@ export default function BarberView({ activeBarber, transactions, setTransactions
       </div>
 
       <div className="jr-grid">
-        {/* قسم أزرار والخدمات */}
         <div className="jr-card">
-          <div className="jr-card-title">اختر الخدمة المقدمة:</div>
+          <div className="jr-card-title">اختر الخدمة المقدمة</div>
 
-          {/* شريط الفئات */}
           <div className="categories-bar">
             {SERVICES_CATEGORIES.map(cat => (
               <button
@@ -115,17 +107,16 @@ export default function BarberView({ activeBarber, transactions, setTransactions
             ))}
           </div>
 
-          {/* شبكة أزرار الخدمات المتجاوبة */}
           <div className="services-grid">
             {currentCatObj?.services.map(service => (
               <div key={service.id} className="service-box">
-                <div className="service-info-top">
+                <div>
                   <span className="service-badge">{service.shortName}</span>
                   <div className="service-name">{service.name}</div>
                   <div className="service-price">{service.price} DH</div>
                 </div>
 
-                <div className="service-action-bottom">
+                <div>
                   <input
                     type="number"
                     placeholder="سعر مخصص"
@@ -133,11 +124,8 @@ export default function BarberView({ activeBarber, transactions, setTransactions
                     onChange={(e) => setCustomPrices({ ...customPrices, [service.id]: e.target.value })}
                     className="custom-price-input"
                   />
-                  <button 
-                    onClick={() => handleServiceClick(service)}
-                    className="add-btn"
-                  >
-                    إضافة
+                  <button onClick={() => handleServiceClick(service)} className="add-btn">
+                    تسجيل الخدمة +
                   </button>
                 </div>
               </div>
@@ -145,9 +133,8 @@ export default function BarberView({ activeBarber, transactions, setTransactions
           </div>
         </div>
 
-        {/* قسم السجل اليومي والحسابات */}
         <div className="jr-card">
-          <div className="jr-card-title">سجل العمليات وحسابك اليومي:</div>
+          <div className="jr-card-title">سجلك اليومي ({activeBarber})</div>
           
           <div className="transactions-list">
             {barberTransactions.length === 0 ? (
@@ -155,14 +142,13 @@ export default function BarberView({ activeBarber, transactions, setTransactions
             ) : (
               barberTransactions.map(t => (
                 <div key={t.id} className="transaction-item">
-                  <div className="trans-info">
+                  <div>
                     <span className="trans-short">{t.shortName}</span>
                     <span className="trans-time">({t.time})</span>
                     <div className="trans-fullname">{t.serviceName}</div>
                   </div>
                   <div className="trans-price-del">
                     <span className="trans-price">{t.price} DH</span>
-                    {t.tip > 0 && <span className="trans-tip-badge">(Tip: {t.tip})</span>}
                     <button onClick={() => handleDeleteTransaction(t.id)} className="delete-btn">
                       <Trash2 size={16} />
                     </button>
@@ -172,7 +158,6 @@ export default function BarberView({ activeBarber, transactions, setTransactions
             )}
           </div>
 
-          {/* صندوق الحسابات والإجماليات */}
           <div className="totals-box">
             <div className="total-row">
               <span>مجموع الخدمات:</span>
@@ -184,12 +169,12 @@ export default function BarberView({ activeBarber, transactions, setTransactions
             </div>
             {totalTips > 0 && (
               <div className="total-row gold-text">
-                <span>إجمالي الإكراميات (Tips):</span>
+                <span>الإكراميات (Tips):</span>
                 <strong>+{totalTips} DH</strong>
               </div>
             )}
             <div className="final-row">
-              <span>المجموع المستلم لك:</span>
+              <span>ما ستستلمه اليوم:</span>
               <span className="final-price">{totalTake.toFixed(2)} DH</span>
             </div>
           </div>

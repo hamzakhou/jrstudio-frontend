@@ -1,9 +1,9 @@
-/* تصميم متجاوب 100% لواجهة الحلاق - JR Studio */
+/* تصميم متجاوب واحترافي 100% لواجهة الحلاق - JR Studio */
 .jr-container {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 12px;
+  padding: 10px;
   background-color: #111827;
   color: #f3f4f6;
   min-height: 100vh;
@@ -15,19 +15,21 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
-  flex-wrap: wrap;
-  gap: 10px;
+  margin-bottom: 12px;
+  background-color: #1f2937;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #374151;
 }
 
 .jr-title {
-  font-size: 20px;
+  font-size: 17px;
   font-weight: bold;
   color: #fbbf24;
   margin: 0;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .barber-name-highlight {
@@ -38,86 +40,80 @@
   background-color: #ef4444;
   color: #ffffff;
   border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
+  padding: 6px 12px;
+  border-radius: 6px;
   cursor: pointer;
   font-weight: bold;
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 13px;
+  gap: 4px;
+  font-size: 12px;
 }
 
 /* التخطيط الهيكلي */
 .jr-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-}
-
-@media (min-width: 900px) {
-  .jr-grid {
-    grid-template-columns: 1.3fr 1fr;
-    gap: 20px;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .jr-card {
   background-color: #1f2937;
   border: 1px solid #374151;
-  border-radius: 14px;
-  padding: 14px;
+  border-radius: 12px;
+  padding: 12px;
   box-sizing: border-box;
 }
 
 .jr-card-title {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   color: #fde047;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   border-bottom: 1px solid #374151;
-  padding-bottom: 8px;
+  padding-bottom: 6px;
 }
 
-/* شريط فئات الخدمات */
+/* شريط فئات الخدمات (تم جعله يلتف بشكل أنيق ومريح للأصابع بدلاً من التمرير الطويل المزعج) */
 .categories-bar {
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
-  overflow-x: auto;
-  padding-bottom: 8px;
   margin-bottom: 12px;
-  -webkit-overflow-scrolling: touch;
 }
 
 .cat-btn {
-  background-color: #374151;
+  background-color: #111827;
   color: #9ca3af;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
+  border: 1px solid #374151;
+  padding: 6px 10px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 13px;
-  white-space: nowrap;
+  font-size: 11px;
   font-weight: 500;
+  flex: 1 1 auto;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .cat-btn.active {
   background-color: #d97706;
   color: #ffffff;
+  border-color: #d97706;
 }
 
-/* شبكة أزرار الخدمات */
+/* شبكة أزرار الخدمات: عمودين متناسقين تماماً على الهواتف */
 .services-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+  gap: 8px;
 }
 
 .service-box {
   background-color: #111827;
   border: 1px solid #374151;
-  border-radius: 10px;
-  padding: 10px;
+  border-radius: 8px;
+  padding: 8px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -127,27 +123,27 @@
 .service-badge {
   background-color: #1f2937;
   color: #fbbf24;
-  font-size: 10px;
-  padding: 2px 6px;
+  font-size: 9px;
+  padding: 1px 4px;
   border-radius: 4px;
   font-family: monospace;
   display: inline-block;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 
 .service-name {
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
   color: #ffffff;
-  line-height: 1.2;
+  line-height: 1.1;
 }
 
 .service-price {
   color: #fde047;
   font-weight: bold;
-  font-size: 14px;
-  margin-bottom: 8px;
+  font-size: 12px;
+  margin-bottom: 6px;
 }
 
 .custom-price-input {
@@ -155,10 +151,10 @@
   background-color: #1f2937;
   border: 1px solid #4b5563;
   color: #ffffff;
-  padding: 7px;
-  font-size: 12px;
-  border-radius: 6px;
-  margin-bottom: 6px;
+  padding: 5px;
+  font-size: 11px;
+  border-radius: 4px;
+  margin-bottom: 5px;
   box-sizing: border-box;
   text-align: center;
 }
@@ -168,26 +164,26 @@
   color: #111827;
   border: none;
   font-weight: bold;
-  font-size: 13px;
-  padding: 9px;
-  border-radius: 6px;
+  font-size: 11px;
+  padding: 7px;
+  border-radius: 4px;
   cursor: pointer;
   width: 100%;
 }
 
 /* قائمة السجل اليومي */
 .transactions-list {
-  max-height: 230px;
+  max-height: 200px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .transaction-item {
   background-color: #111827;
-  padding: 10px;
-  border-radius: 8px;
+  padding: 8px;
+  border-radius: 6px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -197,35 +193,30 @@
 .trans-short {
   font-weight: bold;
   color: #fbbf24;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .trans-time {
-  font-size: 11px;
+  font-size: 10px;
   color: #9ca3af;
   margin-left: 4px;
 }
 
 .trans-fullname {
-  font-size: 11px;
+  font-size: 10px;
   color: #d1d5db;
 }
 
 .trans-price-del {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .trans-price {
   color: #fbbf24;
   font-weight: bold;
-  font-size: 13px;
-}
-
-.trans-tip-badge {
-  color: #34d399;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .delete-btn {
@@ -233,31 +224,31 @@
   border: none;
   color: #f87171;
   cursor: pointer;
-  padding: 4px;
+  padding: 2px;
 }
 
 .no-trans {
   color: #9ca3af;
   text-align: center;
-  font-size: 12px;
-  padding: 20px;
+  font-size: 11px;
+  padding: 15px;
 }
 
 /* صندوق الإجماليات النهائي */
 .totals-box {
-  margin-top: 14px;
-  padding-top: 10px;
+  margin-top: 10px;
+  padding-top: 8px;
   border-top: 1px solid #374151;
   background-color: #111827;
-  padding: 12px;
-  border-radius: 10px;
+  padding: 10px;
+  border-radius: 8px;
 }
 
 .total-row {
   display: flex;
   justify-content: space-between;
-  font-size: 13px;
-  margin-bottom: 6px;
+  font-size: 12px;
+  margin-bottom: 4px;
   color: #9ca3af;
 }
 
@@ -273,15 +264,32 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: bold;
   color: #ffffff;
-  margin-top: 8px;
+  margin-top: 6px;
   border-top: 1px solid #374151;
-  padding-top: 8px;
+  padding-top: 6px;
 }
 
 .final-price {
   color: #fbbf24;
-  font-size: 18px;
+  font-size: 16px;
+}
+
+/* التكيف مع شاشات الحاسوب الكبيرة */
+@media (min-width: 900px) {
+  .jr-grid {
+    grid-template-columns: 1.3fr 1fr;
+    gap: 16px;
+  }
+  
+  .categories-bar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+  
+  .cat-btn {
+    flex: unset;
+  }
 }
