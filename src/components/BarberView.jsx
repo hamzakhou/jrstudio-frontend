@@ -63,17 +63,18 @@ export default function BarberView({ activeBarber, transactions, setTransactions
   const totalServices = barberTransactions.reduce((acc, curr) => acc + Number(curr.price), 0);
   const totalTips = barberTransactions.reduce((acc, curr) => acc + Number(curr.tip || 0), 0);
 
-  // --- حساب حصة الحلاق بدقة (البروتين أو أي خدمة فيها prot أو kératine تُقسم على 3، والباقي على 2) ---
+  // --- حساب حصة الحلاق بدقة (شامل للبروتين والـ Prot Cls على 3، والباقي على 2) ---
   let barberShare = 0;
   barberTransactions.forEach(t => {
     const p = Number(t.price) || 0;
     const sName = (t.serviceName || '').toLowerCase();
     const sShort = (t.shortName || '').toLowerCase();
     
-    const isProt = sName.includes('prot') || sName.includes('kératine') || 
-                   sShort.includes('prot') || sShort.includes('kératine');
+    // شرط مرن يشمل prot, kératine, cls, بروتين
+    const isProtein = sName.includes('prot') || sName.includes('kératine') || sName.includes('cls') || sName.includes('بروتين') ||
+                      sShort.includes('prot') || sShort.includes('kératine') || sShort.includes('cls') || sShort.includes('بروتين');
     
-    if (isProt) {
+    if (isProtein) {
       barberShare += p / 3;
     } else {
       barberShare += p / 2;
