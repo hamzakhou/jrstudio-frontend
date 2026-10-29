@@ -1,13 +1,12 @@
 /* تصميم واجهة الحلاق - JR Studio */
 .jr-container {
-  max-width: 1000px;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 15px;
   background-color: #111827;
   color: #f3f4f6;
   min-height: 100vh;
   font-family: system-ui, -apple-system, sans-serif;
-  border-radius: 12px;
   box-sizing: border-box;
 }
 
@@ -28,6 +27,7 @@
   overflow-x: auto;
   padding-bottom: 10px;
   margin-bottom: 15px;
+  -webkit-overflow-scrolling: touch;
 }
 
 .barber-btn {
@@ -53,19 +53,21 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
-/* التخطيط الرئيسي */
+/* التخطيط الرئيسي (جنب لجنب على الحاسوب، وتحت بعض على الهاتف) */
 .jr-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 15px;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 16px;
+  align-items: start;
 }
 
 .jr-card {
   background-color: #1f2937;
   border: 1px solid #374151;
   border-radius: 12px;
-  padding: 14px;
+  padding: 16px;
   box-sizing: border-box;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .jr-card-title {
@@ -74,16 +76,16 @@
   color: #fde047;
   margin-bottom: 12px;
   border-bottom: 1px solid #374151;
-  padding-bottom: 6px;
+  padding-bottom: 8px;
 }
 
 /* فئات الخدمات */
 .categories-bar {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   overflow-x: auto;
-  padding-bottom: 6px;
-  margin-bottom: 12px;
+  padding-bottom: 8px;
+  margin-bottom: 14px;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -91,11 +93,13 @@
   background-color: #374151;
   color: #9ca3af;
   border: none;
-  padding: 6px 10px;
+  padding: 8px 12px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 13px;
   white-space: nowrap;
+  font-weight: 500;
+  transition: all 0.2s;
 }
 
 .cat-btn.active {
@@ -106,15 +110,15 @@
 /* شبكة أزرار الخدمات المتجاوبة للهواتف */
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* عمودين بانتظام على الهواتف لعدم التداخل */
+  grid-template-columns: repeat(2, 1fr);
   gap: 10px;
 }
 
 .service-box {
-  background-color: #374151;
-  border: 1px solid #4b5563;
-  border-radius: 8px;
-  padding: 10px;
+  background-color: #111827;
+  border: 1px solid #374151;
+  border-radius: 10px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -122,41 +126,42 @@
 }
 
 .service-badge {
-  background-color: #111827;
+  background-color: #1f2937;
   color: #fbbf24;
   font-size: 10px;
-  padding: 2px 5px;
+  padding: 2px 6px;
   border-radius: 4px;
   font-family: monospace;
   display: inline-block;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .service-name {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   color: #ffffff;
-  line-height: 1.2;
+  line-height: 1.3;
 }
 
 .service-price {
   color: #fde047;
   font-weight: bold;
-  font-size: 13px;
-  margin-bottom: 6px;
+  font-size: 14px;
+  margin-bottom: 8px;
 }
 
 .custom-price-input {
   width: 100%;
-  background-color: #111827;
+  background-color: #1f2937;
   border: 1px solid #4b5563;
   color: #fff;
-  padding: 6px;
+  padding: 8px;
   font-size: 13px;
-  border-radius: 4px;
-  margin-bottom: 6px;
+  border-radius: 6px;
+  margin-bottom: 8px;
   box-sizing: border-box;
+  text-align: center;
 }
 
 .add-btn {
@@ -164,8 +169,8 @@
   color: #111827;
   border: none;
   font-weight: bold;
-  font-size: 12px;
-  padding: 8px;
+  font-size: 13px;
+  padding: 10px;
   border-radius: 6px;
   cursor: pointer;
   width: 100%;
@@ -178,22 +183,23 @@
 
 /* قائمة السجل اليومي */
 .transactions-list {
-  max-height: 220px;
+  max-height: 250px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding-right: 2px;
+  gap: 8px;
+  padding-right: 4px;
 }
 
 .transaction-item {
-  background-color: #374151;
-  padding: 8px;
-  border-radius: 6px;
+  background-color: #111827;
+  padding: 10px;
+  border-radius: 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 13px;
+  border: 1px solid #374151;
 }
 
 .trans-short {
@@ -202,15 +208,15 @@
 }
 
 .trans-time {
-  font-size: 10px;
+  font-size: 11px;
   color: #9ca3af;
-  margin-left: 4px;
+  margin-left: 6px;
 }
 
 .trans-price-del {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .delete-btn {
@@ -218,24 +224,24 @@
   border: none;
   color: #f87171;
   cursor: pointer;
-  font-size: 14px;
-  padding: 2px;
+  font-size: 16px;
+  padding: 4px;
 }
 
 .no-trans {
   color: #9ca3af;
   text-align: center;
-  font-size: 12px;
-  padding: 15px;
+  font-size: 13px;
+  padding: 20px;
 }
 
 /* الحسابات النهائية */
 .totals-box {
-  margin-top: 12px;
-  padding-top: 10px;
+  margin-top: 15px;
+  padding-top: 12px;
   border-top: 1px solid #374151;
   background-color: #111827;
-  padding: 10px;
+  padding: 12px;
   border-radius: 8px;
 }
 
@@ -243,42 +249,49 @@
   display: flex;
   justify-content: space-between;
   font-size: 13px;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   color: #9ca3af;
 }
 
 .final-row {
   display: flex;
   justify-content: space-between;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: bold;
   color: #fbbf24;
 }
 
-/* --- Media Queries للتكيف التام مع الهواتف الذكية --- */
+/* --- تحسينات دقيقة للتجاوب التام مع الهواتف الذكية --- */
 @media (max-width: 768px) {
   .jr-container {
     padding: 10px !important;
-    border-radius: 0 !important;
   }
 
-  /* تحويل التخطيط لعمود واحد طولي مريح للجوال */
   .jr-grid {
     grid-template-columns: 1fr !important;
-    gap: 12px !important;
+    gap: 14px !important;
   }
 
-  /* تثبيت شبكة الخدمات على عمودين لتكون أزرارها واسعة وسهلة اللمس */
   .services-grid {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 8px !important;
   }
 
   .service-box {
-    padding: 8px !important;
+    padding: 10px !important;
   }
 
   .jr-title {
-    font-size: 18px !important;
+    font-size: 19px !important;
+  }
+
+  .custom-price-input {
+    padding: 6px !important;
+    font-size: 12px !important;
+  }
+
+  .add-btn {
+    padding: 8px !important;
+    font-size: 12px !important;
   }
 }
