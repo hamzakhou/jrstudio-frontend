@@ -1,10 +1,10 @@
-/* --- JR Studio - Ultra Smooth & Fast Theme --- */
+/* --- JR Studio - Ultra Smooth & Mobile Fixed Theme --- */
 
 .admin-container {
   padding: 16px;
   max-width: 1400px;
   margin: 0 auto;
-  background-color: #0b0f19; /* خلفية داكنة صافية وخفيفة للغاية بدلاً من الصورة الثقيلة */
+  background-color: #0b0f19;
   color: #f3f4f6;
   min-height: 100vh;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -45,11 +45,11 @@
   flex-shrink: 0;
 }
 
-/* Stats Grid & Cards */
+/* Stats Grid & Cards (Fixed for Mobile Layout) */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(2, 1fr); /* عمودين متساوين تماماً على الهاتف */
+  gap: 10px;
   margin-top: 10px;
 }
 
@@ -60,19 +60,25 @@
   padding: 14px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  transform: translateZ(0); /* تسريع الهاردوير */
+  justify-content: space-between;
+  align-items: center; /* توسيط المحتوى لترتيب ممتاز */
+  text-align: center;
+  transform: translateZ(0);
 }
 
 .stat-label {
   font-size: 12px;
   color: #9ca3af;
   font-weight: 600;
+  margin-bottom: 6px;
+  line-height: 1.4;
 }
 
 .stat-value {
   font-size: 20px;
   font-weight: 800;
+  direction: ltr; /* لضمان ضبط اتجاه الأرقام والرموز مثل DH و + بشكل صحيح */
+  unicode-bidi: embed;
 }
 
 .stat-value.gold {
@@ -128,7 +134,7 @@
   flex-direction: column;
   gap: 8px;
   padding-right: 2px;
-  -webkit-overflow-scrolling: touch; /* تمرير سلس جداً على الآيفون والأندرويد */
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Scrollbar styling */
@@ -261,6 +267,9 @@
 
 /* Media Queries */
 @media (min-width: 640px) {
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
   .expense-input.title {
     flex: 2;
     min-width: 180px;
@@ -295,10 +304,7 @@
     width: 100%;
     justify-content: center;
   }
-  .stats-grid {
-    grid-template-columns: 1fr 1fr;
-  }
   .stat-card:last-child {
-    grid-column: span 2;
+    grid-column: span 2; /* إجمالي الصندوق يأخذ العرض كاملاً في الأسفل */
   }
 }
