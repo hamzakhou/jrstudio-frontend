@@ -15,7 +15,7 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
 
   // حالات الأرشيف والأيام السابقة
   const [archivedDays, setArchivedDays] = useState([]);
-  const [selectedDate, setSelectedDate] = useState('current'); // 'current' أو تاريخ اليوم المؤرشف
+  const [selectedDate, setSelectedDate] = useState('current');
   const [archiveData, setArchiveData] = useState(null);
 
   useEffect(() => {
@@ -45,12 +45,16 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
 
     fetchAdminData();
 
-    // جلب الأيام المغلقة للأرشيف
+    // جلب الأيام المغلقة للأرشيف بمرونة
     fetch(`${API_URL}/api/cloture/history`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
           setArchivedDays(data);
+        } else if (data && Array.isArray(data.history)) {
+          setArchivedDays(data.history);
+        } else if (data && Array.isArray(data.clotures)) {
+          setArchivedDays(data.clotures);
         }
       })
       .catch(err => console.error("Error fetching archives:", err));
@@ -72,7 +76,7 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
     if (dateVal === 'current') {
       setArchiveData(null);
     } else {
-      const found = archivedDays.find(d => d.date === dateVal);
+      const found = archivedDays.find(d => (d.date || d.id || '').toString() === dateVal.toString());
       setArchiveData(found || null);
     }
   };
@@ -302,16 +306,21 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
             }}
           >
             <option value="current">اليوم الحالي (العمليات الجارية)</option>
-            {archivedDays.map(day => (
-              <option key={day.date} value={day.date}>
-                📅 يوم: {day.date} (صافي: {day.laisseNet} DH)
-              </option>
-            ))}
+            {archivedDays.map((day, idx) => {
+              const dLabel = day.date || day.created_at || `يوم سابق #${idx + 1}`;
+              const dVal = day.date || day.id || idx;
+              const dNet = day.laisseNet || day.laisse_net || 0;
+              return (
+                <option key={idx} value={dVal}>
+                  📅 تاريخ: {dLabel} (صافي: {dNet} DH)
+                </option>
+              );
+            })}
           </select>
         </div>
       </div>
 
-      {/* تنبيه إذا كان العرض وضع أرشيف */}
+      {/* تنبيه عند استعراض وضع أرشيف */}
       {selectedDate !== 'current' && (
         <div style={{
           backgroundColor: 'rgba(251, 191, 36, 0.1)',
@@ -323,7 +332,7 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
           textAlign: 'center',
           fontWeight: 'bold'
         }}>
-          ⚠️ أنت تستعرض حالياً تقرير أرشيف تاريخ: {selectedDate} (للاطلاع فقط)
+          ⚠️ أنت تستعرض حالياً تقرير أرشيف تاريخ: {archiveData?.date || archiveData?.created_at || selectedDate} (للاطلاع فقط)
         </div>
       )}
 
@@ -382,7 +391,7 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
           <div className="stat-card">
             <span className="stat-label">مدخول خدمات اليوم</span>
             <span className="stat-value gold">
-              {selectedDate === 'current' ? totalServicesToday : (archiveData?.totalServices || 0)} DH
+              {selectedDate === 'current' ? totalServicesToday : (archiveData?.totalServices || archiveData?.total_services || 0)} DH
             </span>
           </div>
           <div className="stat-card">
@@ -394,19 +403,19 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
           <div className="stat-card">
             <span className="stat-label">صندوق الأمس (Report)</span>
             <span className="stat-value blue">
-              {selectedDate === 'current' ? yesterdayAmount : (archiveData?.yesterdayCaisse || 0)} DH
+              {selectedDate === 'current' ? yesterdayAmount : (archiveData?.yesterdayCaisse || archiveData?.yesterday_caisse || 0)} DH
             </span>
           </div>
           <div className="stat-card">
             <span className="stat-label">إجمالي المصاريف المخصومة</span>
             <span className="stat-value red">
-              -{selectedDate === 'current' ? totalExpenses : (archiveData?.totalExpenses || 0)} DH
+              -{selectedDate === 'current' ? totalExpenses : (archiveData?.totalExpenses || archiveData?.total_expenses || 0)} DH
             </span>
           </div>
           <div className="stat-card" style={{ gridColumn: 'span 4', backgroundColor: '#1f2937' }}>
             <span className="stat-label" style={{ fontSize: '15px', color: '#fbbf24' }}>المجموع الفعلي الموجود في الدرج/الصندوق الآن (Caisse Brut)</span>
             <span className="stat-value gold" style={{ fontSize: '28px' }}>
-              {selectedDate === 'current' ? totalCaisseBeforePay : (archiveData?.totalCaisseBrut || 0)} DH
+              {selectedDate === 'current' ? totalCaisseBeforePay : (archiveData?.totalCaisseBrut || archiveData?.total_caisse_brut || 0)} DH
             </span>
           </div>
         </div>
@@ -427,7 +436,7 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
           <div className="stat-card">
             <span className="stat-label">مجموع واجبات الحلاقين (البروتين ÷3 والباقي ÷2)</span>
             <span className="stat-value red" style={{ color: '#f87171' }}>
-              -{selectedDate === 'current' ? totalBarbersPay.toFixed(2) : Number(archiveData?.totalBarbersPay || 0).toFixed(2)} DH
+              -{selectedDate === 'current' ? totalBarbersPay.toFixed(2) : Number(archiveData?.totalBarbersPay || archiveData?.total_barbers_pay || 0).toFixed(2)} DH
             </span>
           </div>
           <div className="stat-card">
@@ -439,13 +448,13 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
           <div className="stat-card">
             <span className="stat-label">إجمالي المصاريف (Dépenses)</span>
             <span className="stat-value red">
-              -{selectedDate === 'current' ? totalExpenses : (archiveData?.totalExpenses || 0)} DH
+              -{selectedDate === 'current' ? totalExpenses : (archiveData?.totalExpenses || archiveData?.total_expenses || 0)} DH
             </span>
           </div>
           <div className="stat-card" style={{ backgroundColor: '#064e3b', border: '1px solid #10b981', gridColumn: 'span 3' }}>
             <span className="stat-label" style={{ color: '#a7f3d0' }}>الصافي النهائي المتبقي للصالون (Laisse Net)</span>
             <span className="stat-value green" style={{ color: '#34d399', fontSize: '24px' }}>
-              {selectedDate === 'current' ? laisseNetTotal.toFixed(2) : Number(archiveData?.laisseNet || 0).toFixed(2)} DH
+              {selectedDate === 'current' ? laisseNetTotal.toFixed(2) : Number(archiveData?.laisseNet || archiveData?.laisse_net || 0).toFixed(2)} DH
             </span>
           </div>
         </div>
