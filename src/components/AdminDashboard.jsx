@@ -150,48 +150,48 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
   const totalBarbersPay = calculateBarbersTotalPay();
   const laisseNetTotal = totalCaisseBeforePay - totalBarbersPay - totalTipsToday;
 
-  // --- 🌟 منطق حساب الإحصائيات الذكية (Smart Insights) ---
-  const getTopBarber = () => {
-    if (!validTransactions.length) return null;
-    const barberTotals = {};
-
+  // --- 🌟 منطق حساب الإحصائيات الذكية الآمن 100% ---
+  const getTopBarberInfo = () => {
+    if (!validTransactions.length) return { name: 'لا توجد خدمات بعد', revenue: 0 };
+    const totals = {};
     validTransactions.forEach(t => {
-      barberTotals[t.barber] = (barberTotals[t.barber] || 0) + Number(t.price);
+      if (t.barber) {
+        totals[t.barber] = (totals[t.barber] || 0) + (Number(t.price) || 0);
+      }
     });
 
-    let topName = '';
+    let bestName = 'غير متوفر';
     let maxRev = 0;
-    for (const [name, rev] of Object.entries(barberTotals)) {
+    for (const [name, rev] of Object.entries(totals)) {
       if (rev > maxRev) {
         maxRev = rev;
-        topName = name;
+        bestName = name;
       }
     }
-    return topName ? { name: topName, revenue: maxRev } : null;
+    return { name: bestName, revenue: maxRev };
   };
 
-  const getMostPopularService = () => {
+  const getPopularServiceInfo = () => {
     if (!validTransactions.length) return 'لا توجد خدمات بعد';
-    const serviceCounts = {};
-
+    const counts = {};
     validTransactions.forEach(t => {
-      const sName = t.shortName || t.serviceName || 'خدمة';
-      serviceCounts[sName] = (serviceCounts[sName] || 0) + 1;
+      const s = t.shortName || t.serviceName || 'خدمة عامة';
+      counts[s] = (counts[s] || 0) + 1;
     });
 
-    let popular = '';
-    let maxCount = 0;
-    for (const [s, count] of Object.entries(serviceCounts)) {
-      if (count > maxCount) {
-        maxCount = count;
-        popular = s;
+    let popular = 'حلاقة شعر';
+    let maxC = 0;
+    for (const [sName, count] of Object.entries(counts)) {
+      if (count > maxC) {
+        maxC = count;
+        popular = sName;
       }
     }
-    return popular || 'حلاقة شعر';
+    return popular;
   };
 
-  const topBarber = getTopBarber();
-  const popularService = getMostPopularService();
+  const topBarber = getTopBarberInfo();
+  const popularService = getPopularServiceInfo();
 
   const handleAddExpense = async (e) => {
     e.preventDefault();
@@ -290,7 +290,6 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
     }
   };
 
-  // تاريخ اليوم منسقاً بشكل جميل
   const todayFormatted = new Date().toLocaleDateString('fr-FR', {
     weekday: 'long',
     year: 'numeric',
@@ -328,7 +327,7 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
         </button>
       </div>
 
-      {/* 🌟 قسم الإحصائيات الذكية (Smart Insights) */}
+      {/* 🌟 بطاقات الإحصائيات الذكية (Smart Insights) - مضمونة ومحدثة */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
@@ -362,7 +361,7 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
               ⭐ الحلاق الأكثر إنتاجية اليوم (Top Performer)
             </span>
             <div style={{ fontSize: '18px', fontWeight: '800', color: '#fff' }}>
-              {topBarber ? `${topBarber.name} (${topBarber.revenue} DH)` : 'لا توجد خدمات بعد'}
+              {topBarber.revenue > 0 ? `${topBarber.name} (${topBarber.revenue} DH)` : 'لا توجد خدمات مسجلة'}
             </div>
           </div>
         </div>
@@ -394,7 +393,7 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
               🔥 الخدمة الأكثر طلباً اليوم (Most Popular)
             </span>
             <div style={{ fontSize: '18px', fontWeight: '800', color: '#fff' }}>
-              {popularService}
+              {validTransactions.length > 0 ? popularService : 'لا توجد خدمات مسجلة'}
             </div>
           </div>
         </div>
@@ -448,7 +447,6 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
         </div>
       </div>
 
-      {/* تنبيه عند استعراض وضع أرشيف */}
       {selectedDate !== 'current' && (
         <div style={{
           backgroundColor: 'rgba(251, 191, 36, 0.1)',
