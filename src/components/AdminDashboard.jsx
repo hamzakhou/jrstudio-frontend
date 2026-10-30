@@ -21,33 +21,30 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
   useEffect(() => {
     const fetchAdminData = () => {
       fetch(`${API_URL}/api/transactions`)
-        .then(res => res.json())
+        .then(res => res.ok ? res.json() : [])
         .then(data => {
-          if (Array.isArray(data)) {
-            setTransactions(data);
-          } else {
-            setTransactions([]);
-          }
+          if (Array.isArray(data)) setTransactions(data);
+          else setTransactions([]);
         })
         .catch(err => console.error("Error fetching transactions:", err));
 
       fetch(`${API_URL}/api/expenses`)
-        .then(res => res.json())
+        .then(res => res.ok ? res.json() : [])
         .then(data => {
-          if (Array.isArray(data)) {
-            setExpenses(data);
-          } else {
-            setExpenses([]);
-          }
+          if (Array.isArray(data)) setExpenses(data);
+          else setExpenses([]);
         })
         .catch(err => console.error("Error fetching expenses:", err));
     };
 
     fetchAdminData();
 
-    // جلب الأيام المغلقة للأرشيف بمرونة
+    // جلب الأيام المغلقة للأرشيف بشكل آمن لا يتسبب في خطأ 404
     fetch(`${API_URL}/api/cloture/history`)
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error('API history not found');
+        return res.json();
+      })
       .then(data => {
         if (Array.isArray(data)) {
           setArchivedDays(data);
@@ -57,10 +54,10 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
           setArchivedDays(data.clotures);
         }
       })
-      .catch(err => console.error("Error fetching archives:", err));
+      .catch(err => console.log("Archive endpoint not active yet or returned 404 (Ignored)"));
 
     fetch(`${API_URL}/api/settings/yesterday_caisse`)
-      .then(res => res.json())
+      .then(res => res.ok ? res.json() : null)
       .then(data => {
         if (data && data.value) setYesterdayCaisse(data.value);
       })
@@ -327,7 +324,7 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
         </button>
       </div>
 
-      {/* 🌟 بطاقات الإحصائيات الذكية (Smart Insights) - مضمونة ومحدثة */}
+      {/* 🌟 بطاقات الإحصائيات الذكية (Smart Insights) */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
