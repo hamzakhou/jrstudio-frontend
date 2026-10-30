@@ -247,12 +247,25 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
     }
   };
 
+  // تاريخ اليوم منسقاً بشكل جميل
+  const todayFormatted = new Date().toLocaleDateString('fr-FR', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+
   return (
     <div className="admin-container">
       <div className="admin-header">
-        <h2 className="admin-title">
-          <LayoutDashboard size={28} /> JR Studio - إدارة الصندوق والحسابات
-        </h2>
+        <div>
+          <h2 className="admin-title" style={{ margin: 0 }}>
+            <LayoutDashboard size={28} /> JR Studio - إدارة الصندوق والحسابات
+          </h2>
+          <span style={{ color: '#fbbf24', fontSize: '14px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px', marginTop: '6px' }}>
+            📅 تاريخ اليوم: {todayFormatted}
+          </span>
+        </div>
         <button 
           onClick={onLogout}
           style={{
