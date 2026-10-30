@@ -1,11 +1,10 @@
-/* --- JR Studio - Modern Dark & Gold Theme with Barber Background --- */
+/* --- JR Studio - Fast & Modern Dark Gold Theme --- */
 
 .admin-container {
   padding: 24px;
   max-width: 1400px;
   margin: 0 auto;
-  /* صورة خلفية فخمة لصالون حلاقة مع تغميق خفيف لضمان وضوح النصوص */
-  background: linear-gradient(rgba(11, 15, 25, 0.88), rgba(11, 15, 25, 0.92)), 
+  background: linear-gradient(rgba(11, 15, 25, 0.92), rgba(11, 15, 25, 0.95)), 
               url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=1600&auto=format&fit=crop') no-repeat center center fixed;
   background-size: cover;
   color: #f3f4f6;
@@ -14,20 +13,17 @@
   direction: rtl;
 }
 
-/* Header Animation & Style */
+/* Header Style */
 .admin-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(31, 41, 55, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(251, 191, 36, 0.2);
+  background: #1f2937;
+  border: 1px solid rgba(251, 191, 36, 0.25);
   border-radius: 16px;
   padding: 20px 24px;
   margin-bottom: 24px;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
-  animation: fadeInDown 0.5s ease-out;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
 }
 
 .admin-title {
@@ -37,12 +33,10 @@
   font-size: 24px;
   font-weight: 800;
   color: #ffffff;
-  letter-spacing: -0.5px;
 }
 
 .admin-title svg {
   color: #fbbf24;
-  filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.4));
 }
 
 /* Stats Grid & Cards */
@@ -54,23 +48,20 @@
 }
 
 .stat-card {
-  background: rgba(31, 41, 55, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: #1f2937;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   padding: 18px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .stat-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(251, 191, 36, 0.4);
-  box-shadow: 0 10px 20px -5px rgba(251, 191, 36, 0.15);
+  transform: translateY(-2px);
+  border-color: rgba(251, 191, 36, 0.5);
 }
 
 .stat-label {
@@ -86,7 +77,6 @@
 
 .stat-value.gold {
   color: #fbbf24;
-  text-shadow: 0 0 12px rgba(251, 191, 36, 0.25);
 }
 
 .stat-value.blue {
@@ -110,22 +100,14 @@
 }
 
 .barber-column-card {
-  background: rgba(17, 24, 39, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
   padding: 16px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  transition: transform 0.3s ease, border-color 0.3s ease;
-}
-
-.barber-column-card:hover {
-  border-color: rgba(251, 191, 36, 0.3);
-  transform: translateY(-2px);
 }
 
 .barber-col-header {
@@ -159,16 +141,11 @@
 }
 
 .barber-col-item {
-  background: rgba(31, 41, 55, 0.8);
+  background: #1f2937;
   border-radius: 8px;
   padding: 10px;
   font-size: 13px;
   border: 1px solid rgba(255, 255, 255, 0.03);
-  transition: background 0.2s;
-}
-
-.barber-col-item:hover {
-  background: rgba(45, 55, 72, 0.9);
 }
 
 .barber-col-totals {
@@ -189,10 +166,8 @@
 
 /* Expenses Section */
 .expenses-section {
-  background: rgba(17, 24, 39, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
   padding: 20px;
   margin-bottom: 25px;
@@ -207,14 +182,13 @@
 }
 
 .expense-input {
-  background: rgba(31, 41, 55, 0.9);
+  background: #1f2937;
   border: 1px solid #374151;
   color: #fff;
   padding: 10px 14px;
   border-radius: 8px;
   font-size: 14px;
   outline: none;
-  transition: border-color 0.2s;
 }
 
 .expense-input:focus {
@@ -239,15 +213,11 @@
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
+  transition: background 0.2s;
 }
 
 .add-expense-btn:hover {
   background-color: #dc2626;
-}
-
-.add-expense-btn:active {
-  transform: scale(0.97);
 }
 
 .expenses-list {
@@ -257,8 +227,8 @@
 }
 
 .expense-chip {
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.4);
   color: #fca5a5;
   padding: 6px 12px;
   border-radius: 8px;
@@ -270,16 +240,13 @@
 
 /* Laisse Net Banner */
 .laisse-banner {
-  background: linear-gradient(135deg, rgba(6, 78, 59, 0.9) 0%, rgba(2, 44, 34, 0.95) 100%);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: linear-gradient(135deg, #064e3b 0%, #022c22 100%);
   border: 1px solid #10b981;
   border-radius: 16px;
   padding: 24px;
   text-align: center;
-  box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25);
   margin-top: 25px;
-  animation: pulseGlow 3s infinite alternate;
 }
 
 .laisse-title {
@@ -293,28 +260,6 @@
   font-size: 38px;
   font-weight: 900;
   color: #34d399;
-  text-shadow: 0 0 20px rgba(52, 211, 153, 0.4);
-}
-
-/* Animations Keyframes */
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-15px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes pulseGlow {
-  0% {
-    box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.2);
-  }
-  100% {
-    box-shadow: 0 10px 35px -5px rgba(16, 185, 129, 0.4);
-  }
 }
 
 /* Responsive adjustments */
