@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { INITIAL_BARBERS } from '../data/initialData';
-import { LayoutDashboard, TrendingDown, LogOut, Plus, Trash2, History, Wallet, Landmark, Gift, MessageCircle } from 'lucide-react';
+import { LayoutDashboard, TrendingDown, LogOut, Plus, Trash2, History, Wallet, Landmark, Gift, MessageCircle, Calendar } from 'lucide-react';
 import './AdminDashboard.css';
 
 // رابط السيرفر السحابي على Vercel
@@ -12,6 +12,11 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
   const [newExpTitle, setNewExpTitle] = useState('');
   const [newExpAmount, setNewExpAmount] = useState('');
   const [tipInputs, setTipInputs] = useState({});
+
+  // حالات الأرشيف والأيام السابقة
+  const [archivedDays, setArchivedDays] = useState([]);
+  const [selectedDate, setSelectedDate] = useState('current'); // 'current' أو تاريخ اليوم المؤرشف
+  const [archiveData, setArchiveData] = useState(null);
 
   useEffect(() => {
     const fetchAdminData = () => {
@@ -40,6 +45,16 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
 
     fetchAdminData();
 
+    // جلب الأيام المغلقة للأرشيف
+    fetch(`${API_URL}/api/cloture/history`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setArchivedDays(data);
+        }
+      })
+      .catch(err => console.error("Error fetching archives:", err));
+
     fetch(`${API_URL}/api/settings/yesterday_caisse`)
       .then(res => res.json())
       .then(data => {
@@ -50,6 +65,17 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
     const interval = setInterval(fetchAdminData, 5000);
     return () => clearInterval(interval);
   }, [setTransactions]);
+
+  // عند اختيار تاريخ معين من الأرشيف
+  const handleSelectDate = (dateVal) => {
+    setSelectedDate(dateVal);
+    if (dateVal === 'current') {
+      setArchiveData(null);
+    } else {
+      const found = archivedDays.find(d => d.date === dateVal);
+      setArchiveData(found || null);
+    }
+  };
 
   const handleYesterdayChange = async (val) => {
     setYesterdayCaisse(val);
@@ -118,8 +144,6 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
   };
 
   const totalBarbersPay = calculateBarbersTotalPay();
-  
-  // --- الصافي الحقيقي للصالون (Laisse Net) ---
   const laisseNetTotal = totalCaisseBeforePay - totalBarbersPay - totalTipsToday;
 
   const handleAddExpense = async (e) => {
@@ -244,6 +268,65 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
         </button>
       </div>
 
+      {/* شريط اختيار الأرشيف (الأيام السابقة) */}
+      <div style={{
+        backgroundColor: '#1f2937',
+        border: '1px solid #374151',
+        borderRadius: '12px',
+        padding: '16px',
+        marginBottom: '20px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '12px'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Calendar size={20} color="#fbbf24" />
+          <span style={{ fontWeight: 'bold', fontSize: '15px' }}>عرض أرشيف الأيام السابقة:</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <select
+            value={selectedDate}
+            onChange={(e) => handleSelectDate(e.target.value)}
+            style={{
+              backgroundColor: '#111827',
+              border: '1px solid #fbbf24',
+              color: '#fbbf24',
+              padding: '8px 12px',
+              borderRadius: '6px',
+              fontWeight: 'bold',
+              fontSize: '15px',
+              outline: 'none',
+              cursor: 'pointer'
+            }}
+          >
+            <option value="current">اليوم الحالي (العمليات الجارية)</option>
+            {archivedDays.map(day => (
+              <option key={day.date} value={day.date}>
+                📅 يوم: {day.date} (صافي: {day.laisseNet} DH)
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* تنبيه إذا كان العرض وضع أرشيف */}
+      {selectedDate !== 'current' && (
+        <div style={{
+          backgroundColor: 'rgba(251, 191, 36, 0.1)',
+          border: '1px solid #fbbf24',
+          color: '#fbbf24',
+          padding: '12px',
+          borderRadius: '8px',
+          marginBottom: '20px',
+          textAlign: 'center',
+          fontWeight: 'bold'
+        }}>
+          ⚠️ أنت تستعرض حالياً تقرير أرشيف تاريخ: {selectedDate} (للاطلاع فقط)
+        </div>
+      )}
+
       <div style={{
         backgroundColor: '#1f2937',
         border: '1px solid #374151',
@@ -266,6 +349,7 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
             placeholder="أدخل مبلغ الأمس (DH)"
             value={yesterdayCaisse}
             onChange={(e) => handleYesterdayChange(e.target.value)}
+            disabled={selectedDate !== 'current'}
             style={{
               backgroundColor: '#111827',
               border: '1px solid #fbbf24',
@@ -275,7 +359,8 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
               fontWeight: 'bold',
               fontSize: '16px',
               width: '180px',
-              textAlign: 'center'
+              textAlign: 'center',
+              opacity: selectedDate !== 'current' ? 0.7 : 1
             }}
           />
           <span style={{ color: '#9ca3af', fontSize: '14px' }}>DH</span>
@@ -296,23 +381,33 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
         <div className="stats-grid">
           <div className="stat-card">
             <span className="stat-label">مدخول خدمات اليوم</span>
-            <span className="stat-value gold">{totalServicesToday} DH</span>
+            <span className="stat-value gold">
+              {selectedDate === 'current' ? totalServicesToday : (archiveData?.totalServices || 0)} DH
+            </span>
           </div>
           <div className="stat-card">
             <span className="stat-label">إجمالي الإكراميات (Pourboires)</span>
-            <span className="stat-value" style={{ color: '#34d399' }}>+{totalTipsToday} DH</span>
+            <span className="stat-value" style={{ color: '#34d399' }}>
+              +{selectedDate === 'current' ? totalTipsToday : 0} DH
+            </span>
           </div>
           <div className="stat-card">
             <span className="stat-label">صندوق الأمس (Report)</span>
-            <span className="stat-value blue">{yesterdayAmount} DH</span>
+            <span className="stat-value blue">
+              {selectedDate === 'current' ? yesterdayAmount : (archiveData?.yesterdayCaisse || 0)} DH
+            </span>
           </div>
           <div className="stat-card">
             <span className="stat-label">إجمالي المصاريف المخصومة</span>
-            <span className="stat-value red">-{totalExpenses} DH</span>
+            <span className="stat-value red">
+              -{selectedDate === 'current' ? totalExpenses : (archiveData?.totalExpenses || 0)} DH
+            </span>
           </div>
           <div className="stat-card" style={{ gridColumn: 'span 4', backgroundColor: '#1f2937' }}>
             <span className="stat-label" style={{ fontSize: '15px', color: '#fbbf24' }}>المجموع الفعلي الموجود في الدرج/الصندوق الآن (Caisse Brut)</span>
-            <span className="stat-value gold" style={{ fontSize: '28px' }}>{totalCaisseBeforePay} DH</span>
+            <span className="stat-value gold" style={{ fontSize: '28px' }}>
+              {selectedDate === 'current' ? totalCaisseBeforePay : (archiveData?.totalCaisseBrut || 0)} DH
+            </span>
           </div>
         </div>
       </div>
@@ -331,216 +426,232 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
         <div className="stats-grid">
           <div className="stat-card">
             <span className="stat-label">مجموع واجبات الحلاقين (البروتين ÷3 والباقي ÷2)</span>
-            <span className="stat-value red" style={{ color: '#f87171' }}>-{totalBarbersPay.toFixed(2)} DH</span>
+            <span className="stat-value red" style={{ color: '#f87171' }}>
+              -{selectedDate === 'current' ? totalBarbersPay.toFixed(2) : Number(archiveData?.totalBarbersPay || 0).toFixed(2)} DH
+            </span>
           </div>
           <div className="stat-card">
             <span className="stat-label">إجمالي إكراميات الحلاقين (تُخصم من الدرج)</span>
-            <span className="stat-value red" style={{ color: '#fbbf24' }}>-{totalTipsToday} DH</span>
+            <span className="stat-value red" style={{ color: '#fbbf24' }}>
+              -{selectedDate === 'current' ? totalTipsToday : 0} DH
+            </span>
           </div>
           <div className="stat-card">
             <span className="stat-label">إجمالي المصاريف (Dépenses)</span>
-            <span className="stat-value red">-{totalExpenses} DH</span>
+            <span className="stat-value red">
+              -{selectedDate === 'current' ? totalExpenses : (archiveData?.totalExpenses || 0)} DH
+            </span>
           </div>
           <div className="stat-card" style={{ backgroundColor: '#064e3b', border: '1px solid #10b981', gridColumn: 'span 3' }}>
             <span className="stat-label" style={{ color: '#a7f3d0' }}>الصافي النهائي المتبقي للصالون (Laisse Net)</span>
-            <span className="stat-value green" style={{ color: '#34d399', fontSize: '24px' }}>{laisseNetTotal.toFixed(2)} DH</span>
+            <span className="stat-value green" style={{ color: '#34d399', fontSize: '24px' }}>
+              {selectedDate === 'current' ? laisseNetTotal.toFixed(2) : Number(archiveData?.laisseNet || 0).toFixed(2)} DH
+            </span>
           </div>
         </div>
       </div>
 
-      <h3 style={{ color: '#fbbf24', marginBottom: '12px' }}>أعمال الحلاقين اليومية:</h3>
-      <div className="barbers-columns-grid">
-        {INITIAL_BARBERS.map(barber => {
-          const barberTrans = validTransactions.filter(t => t.barber === barber.name);
-          
-          let bShare = 0;
-          barberTrans.forEach(t => {
-            const p = Number(t.price) || 0;
-            const sName = (t.serviceName || '').toLowerCase();
-            const sShort = (t.shortName || '').toLowerCase();
-            const isProt = sName.includes('prot') || sName.includes('kératine') || sName.includes('cls') || sName.includes('بروتين') ||
-                           sShort.includes('prot') || sShort.includes('kératine') || sShort.includes('cls') || sShort.includes('بروتين');
-            if (isProt) {
-              bShare += p / 3;
-            } else {
-              bShare += p / 2;
-            }
-          });
+      {selectedDate === 'current' && (
+        <>
+          <h3 style={{ color: '#fbbf24', marginBottom: '12px' }}>أعمال الحلاقين اليومية:</h3>
+          <div className="barbers-columns-grid">
+            {INITIAL_BARBERS.map(barber => {
+              const barberTrans = validTransactions.filter(t => t.barber === barber.name);
+              
+              let bShare = 0;
+              barberTrans.forEach(t => {
+                const p = Number(t.price) || 0;
+                const sName = (t.serviceName || '').toLowerCase();
+                const sShort = (t.shortName || '').toLowerCase();
+                const isProt = sName.includes('prot') || sName.includes('kératine') || sName.includes('cls') || sName.includes('بروتين') ||
+                               sShort.includes('prot') || sShort.includes('kératine') || sShort.includes('cls') || sShort.includes('بروتين');
+                if (isProt) {
+                  bShare += p / 3;
+                } else {
+                  bShare += p / 2;
+                }
+              });
 
-          const bTotal = barberTrans.reduce((acc, curr) => acc + Number(curr.price), 0);
-          const bTips = barberTrans.reduce((acc, curr) => acc + Number(curr.tip || 0), 0);
-          const bTotalTake = bShare + bTips;
+              const bTotal = barberTrans.reduce((acc, curr) => acc + Number(curr.price), 0);
+              const bTips = barberTrans.reduce((acc, curr) => acc + Number(curr.tip || 0), 0);
+              const bTotalTake = bShare + bTips;
 
-          return (
-            <div key={barber.id} className="barber-column-card">
-              <div>
-                <div className="barber-col-header">
-                  <span>{barber.name}</span>
-                  <span style={{ fontSize: '12px', color: '#9ca3af' }}>({barberTrans.length})</span>
-                </div>
+              return (
+                <div key={barber.id} className="barber-column-card">
+                  <div>
+                    <div className="barber-col-header">
+                      <span>{barber.name}</span>
+                      <span style={{ fontSize: '12px', color: '#9ca3af' }}>({barberTrans.length})</span>
+                    </div>
 
-                <div className="barber-col-services">
-                  {barberTrans.length === 0 ? (
-                    <span style={{ color: '#6b7280', fontSize: '11px', textAlign: 'center', display: 'block', padding: '10px' }}>لا توجد خدمات</span>
-                  ) : (
-                    barberTrans.map(t => (
-                      <div key={t.id} className="barber-col-item" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '6px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                          <span style={{ fontWeight: 'bold' }}>{t.shortName}</span>
-                          <span style={{ color: '#fbbf24', fontWeight: 'bold' }}>{t.price} DH</span>
-                        </div>
+                    <div className="barber-col-services">
+                      {barberTrans.length === 0 ? (
+                        <span style={{ color: '#6b7280', fontSize: '11px', textAlign: 'center', display: 'block', padding: '10px' }}>لا توجد خدمات</span>
+                      ) : (
+                        barberTrans.map(t => (
+                          <div key={t.id} className="barber-col-item" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '6px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                              <span style={{ fontWeight: 'bold' }}>{t.shortName}</span>
+                              <span style={{ color: '#fbbf24', fontWeight: 'bold' }}>{t.price} DH</span>
+                            </div>
 
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid #374151', paddingTop: '4px' }}>
-                          <span style={{ fontSize: '11px', color: '#34d399', display: 'flex', alignItems: 'center', gap: '3px' }}>
-                            <Gift size={12} /> Tip: {t.tip || 0} DH
-                          </span>
-                          <div style={{ display: 'flex', gap: '4px' }}>
-                            <input
-                              type="number"
-                              placeholder="Tip"
-                              defaultValue={t.tip || ''}
-                              onChange={(e) => setTipInputs({ ...tipInputs, [t.id]: e.target.value })}
-                              style={{ width: '50px', backgroundColor: '#1f2937', border: '1px solid #4b5563', color: '#34d399', borderRadius: '4px', fontSize: '12px', textAlign: 'center', padding: '2px' }}
-                            />
-                            <button
-                              onClick={() => handleUpdateTip(t.id)}
-                              style={{ backgroundColor: '#10b981', color: '#111827', border: 'none', borderRadius: '4px', padding: '2px 6px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}
-                            >
-                              حفظ
-                            </button>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid #374151', paddingTop: '4px' }}>
+                              <span style={{ fontSize: '11px', color: '#34d399', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                                <Gift size={12} /> Tip: {t.tip || 0} DH
+                              </span>
+                              <div style={{ display: 'flex', gap: '4px' }}>
+                                <input
+                                  type="number"
+                                  placeholder="Tip"
+                                  defaultValue={t.tip || ''}
+                                  onChange={(e) => setTipInputs({ ...tipInputs, [t.id]: e.target.value })}
+                                  style={{ width: '50px', backgroundColor: '#1f2937', border: '1px solid #4b5563', color: '#34d399', borderRadius: '4px', fontSize: '12px', textAlign: 'center', padding: '2px' }}
+                                />
+                                <button
+                                  onClick={() => handleUpdateTip(t.id)}
+                                  style={{ backgroundColor: '#10b981', color: '#111827', border: 'none', borderRadius: '4px', padding: '2px 6px', fontSize: '11px', fontWeight: 'bold', cursor: 'pointer' }}
+                                >
+                                  حفظ
+                                </button>
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-
-              <div className="barber-col-totals">
-                <div className="barber-col-row">
-                  <span>الخدمات (المجموع):</span>
-                  <strong>{bTotal} DH</strong>
-                </div>
-                <div className="barber-col-row" style={{ color: '#4ade80' }}>
-                  <span>واجب الحلاق:</span>
-                  <strong>{bShare.toFixed(2)} DH</strong>
-                </div>
-                {bTips > 0 && (
-                  <div className="barber-col-row" style={{ color: '#fbbf24' }}>
-                    <span>الإكراميات (Pourboire):</span>
-                    <strong>+{bTips} DH</strong>
+                        ))
+                      )}
+                    </div>
                   </div>
-                )}
-                <div className="barber-col-row" style={{ borderTop: '1px solid #374151', paddingTop: '4px', marginTop: '4px', color: '#fff' }}>
-                  <span>المجموع المستلم:</span>
-                  <strong style={{ color: '#fbbf24' }}>{bTotalTake.toFixed(2)} DH</strong>
+
+                  <div className="barber-col-totals">
+                    <div className="barber-col-row">
+                      <span>الخدمات (المجموع):</span>
+                      <strong>{bTotal} DH</strong>
+                    </div>
+                    <div className="barber-col-row" style={{ color: '#4ade80' }}>
+                      <span>واجب الحلاق:</span>
+                      <strong>{bShare.toFixed(2)} DH</strong>
+                    </div>
+                    {bTips > 0 && (
+                      <div className="barber-col-row" style={{ color: '#fbbf24' }}>
+                        <span>الإكراميات (Pourboire):</span>
+                        <strong>+{bTips} DH</strong>
+                      </div>
+                    )}
+                    <div className="barber-col-row" style={{ borderTop: '1px solid #374151', paddingTop: '4px', marginTop: '4px', color: '#fff' }}>
+                      <span>المجموع المستلم:</span>
+                      <strong style={{ color: '#fbbf24' }}>{bTotalTake.toFixed(2)} DH</strong>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              );
+            })}
+          </div>
+
+          <div className="expenses-section">
+            <h3 style={{ color: '#f87171', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <TrendingDown size={20} /> إدارة المصاريف اليومية (Dépenses)
+            </h3>
+
+            <form onSubmit={handleAddExpense} className="expense-input-group">
+              <input
+                type="text"
+                placeholder="بيان المصروف (مثلاً: mouchoir / ménage)"
+                className="expense-input title"
+                value={newExpTitle}
+                onChange={(e) => setNewExpTitle(e.target.value)}
+              />
+              <input
+                type="number"
+                placeholder="المبلغ (DH)"
+                className="expense-input amount"
+                value={newExpAmount}
+                onChange={(e) => setNewExpAmount(e.target.value)}
+              />
+              <button type="submit" className="add-expense-btn">
+                <Plus size={16} style={{ display: 'inline' }} /> إضافة
+              </button>
+            </form>
+
+            <div className="expenses-list">
+              {!Array.isArray(expenses) || expenses.length === 0 ? (
+                <p style={{ color: '#6b7280', fontSize: '13px' }}>لا توجد مصاريف مسجلة حتى الآن.</p>
+              ) : (
+                expenses.map(e => (
+                  <div key={e.id} className="expense-chip">
+                    <span>{e.title}: <strong>{e.amount} DH</strong></span>
+                    <button 
+                      onClick={() => handleDeleteExpense(e.id)} 
+                      style={{ background: 'none', border: 'none', color: '#f87171', cursor: 'pointer' }}
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                ))
+              )}
             </div>
-          );
-        })}
-      </div>
+          </div>
+        </>
+      )}
 
-      <div className="expenses-section">
-        <h3 style={{ color: '#f87171', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <TrendingDown size={20} /> إدارة المصاريف اليومية (Dépenses)
-        </h3>
+      {selectedDate === 'current' && (
+        <>
+          <div className="laisse-banner">
+            <div className="laisse-title">الصافي الكلي المتبقي للصالون (Laisse Net)</div>
+            <div className="laisse-amount">{laisseNetTotal.toFixed(2)} DH</div>
+            <div style={{ fontSize: '12px', color: '#9ca3af', marginTop: '6px' }}>
+              (إجمالي الصندوق {totalCaisseBeforePay} DH - حصة الحلاقين {totalBarbersPay.toFixed(2)} DH - الإكراميات {totalTipsToday} DH)
+            </div>
+          </div>
 
-        <form onSubmit={handleAddExpense} className="expense-input-group">
-          <input
-            type="text"
-            placeholder="بيان المصروف (مثلاً: mouchoir / ménage)"
-            className="expense-input title"
-            value={newExpTitle}
-            onChange={(e) => setNewExpTitle(e.target.value)}
-          />
-          <input
-            type="number"
-            placeholder="المبلغ (DH)"
-            className="expense-input amount"
-            value={newExpAmount}
-            onChange={(e) => setNewExpAmount(e.target.value)}
-          />
-          <button type="submit" className="add-expense-btn">
-            <Plus size={16} style={{ display: 'inline' }} /> إضافة
-          </button>
-        </form>
+          {/* أزرار العمليات النهائية */}
+          <div style={{ marginTop: '30px', display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button
+              onClick={handleShareWhatsApp}
+              style={{
+                backgroundColor: '#25d366',
+                color: '#ffffff',
+                border: 'none',
+                padding: '14px 24px',
+                borderRadius: '10px',
+                fontSize: '15px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                boxShadow: '0 4px 12px rgba(37, 211, 102, 0.3)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                flex: '1',
+                minWidth: '220px',
+                justifyContent: 'center'
+              }}
+            >
+              <MessageCircle size={20} /> إرسال التقرير عبر واتساب
+            </button>
 
-        <div className="expenses-list">
-          {!Array.isArray(expenses) || expenses.length === 0 ? (
-            <p style={{ color: '#6b7280', fontSize: '13px' }}>لا توجد مصاريف مسجلة حتى الآن.</p>
-          ) : (
-            expenses.map(e => (
-              <div key={e.id} className="expense-chip">
-                <span>{e.title}: <strong>{e.amount} DH</strong></span>
-                <button 
-                  onClick={() => handleDeleteExpense(e.id)} 
-                  style={{ background: 'none', border: 'none', color: '#f87171', cursor: 'pointer' }}
-                >
-                  <Trash2 size={14} />
-                </button>
-              </div>
-            ))
-          )}
-        </div>
-      </div>
-
-      <div className="laisse-banner">
-        <div className="laisse-title">الصافي الكلي المتبقي للصالون (Laisse Net)</div>
-        <div className="laisse-amount">{laisseNetTotal.toFixed(2)} DH</div>
-        <div style={{ fontSize: '12px', color: '#9ca3af', marginTop: '6px' }}>
-          (إجمالي الصندوق {totalCaisseBeforePay} DH - حصة الحلاقين {totalBarbersPay.toFixed(2)} DH - الإكراميات {totalTipsToday} DH)
-        </div>
-      </div>
-
-      {/* أزرار العمليات النهائية */}
-      <div style={{ marginTop: '30px', display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-        <button
-          onClick={handleShareWhatsApp}
-          style={{
-            backgroundColor: '#25d366',
-            color: '#ffffff',
-            border: 'none',
-            padding: '14px 24px',
-            borderRadius: '10px',
-            fontSize: '15px',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            boxShadow: '0 4px 12px rgba(37, 211, 102, 0.3)',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            flex: '1',
-            minWidth: '220px',
-            justifyContent: 'center'
-          }}
-        >
-          <MessageCircle size={20} /> إرسال التقرير عبر واتساب
-        </button>
-
-        <button
-          onClick={handleClotureDay}
-          style={{
-            backgroundColor: '#10b981',
-            color: '#111827',
-            border: 'none',
-            padding: '14px 24px',
-            borderRadius: '10px',
-            fontSize: '15px',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            flex: '1',
-            minWidth: '220px',
-            justifyContent: 'center'
-          }}
-        >
-          🔒 إغلاق اليوم وتدوير الحسابات (Clôture)
-        </button>
-      </div>
+            <button
+              onClick={handleClotureDay}
+              style={{
+                backgroundColor: '#10b981',
+                color: '#111827',
+                border: 'none',
+                padding: '14px 24px',
+                borderRadius: '10px',
+                fontSize: '15px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                flex: '1',
+                minWidth: '220px',
+                justifyContent: 'center'
+              }}
+            >
+              🔒 إغلاق اليوم وتدوير الحسابات (Clôture)
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 }
