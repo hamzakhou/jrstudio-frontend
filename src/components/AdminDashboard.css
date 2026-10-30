@@ -1,17 +1,16 @@
-/* --- JR Studio - Mobile Optimized & Fast Dark Gold Theme --- */
+/* --- JR Studio - Ultra Smooth & Fast Theme --- */
 
 .admin-container {
   padding: 16px;
   max-width: 1400px;
   margin: 0 auto;
-  background: linear-gradient(rgba(11, 15, 25, 0.94), rgba(11, 15, 25, 0.97)), 
-              url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=1600&auto=format&fit=crop') no-repeat center center fixed;
-  background-size: cover;
+  background-color: #0b0f19; /* خلفية داكنة صافية وخفيفة للغاية بدلاً من الصورة الثقيلة */
   color: #f3f4f6;
   min-height: 100vh;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   direction: rtl;
   box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
 }
 
 * {
@@ -24,11 +23,10 @@
   justify-content: space-between;
   align-items: center;
   background: #1f2937;
-  border: 1px solid rgba(251, 191, 36, 0.25);
-  border-radius: 14px;
+  border: 1px solid #374151;
+  border-radius: 12px;
   padding: 16px;
   margin-bottom: 20px;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
   gap: 12px;
 }
 
@@ -36,9 +34,10 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 800;
   color: #ffffff;
+  margin: 0;
 }
 
 .admin-title svg {
@@ -56,13 +55,13 @@
 
 .stat-card {
   background: #1f2937;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
+  border: 1px solid #374151;
+  border-radius: 10px;
   padding: 14px;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  transform: translateZ(0); /* تسريع الهاردوير */
 }
 
 .stat-label {
@@ -102,13 +101,12 @@
 
 .barber-column-card {
   background: #111827;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
+  border: 1px solid #1f2937;
+  border-radius: 12px;
   padding: 14px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .barber-col-header {
@@ -118,7 +116,7 @@
   font-size: 15px;
   font-weight: 700;
   color: #fbbf24;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid #1f2937;
   padding-bottom: 8px;
   margin-bottom: 10px;
 }
@@ -130,6 +128,7 @@
   flex-direction: column;
   gap: 8px;
   padding-right: 2px;
+  -webkit-overflow-scrolling: touch; /* تمرير سلس جداً على الآيفون والأندرويد */
 }
 
 /* Scrollbar styling */
@@ -146,11 +145,11 @@
   border-radius: 8px;
   padding: 10px;
   font-size: 13px;
-  border: 1px solid rgba(255, 255, 255, 0.03);
+  border: 1px solid #374151;
 }
 
 .barber-col-totals {
-  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+  border-top: 1px dashed #374151;
   padding-top: 10px;
   margin-top: 10px;
   display: flex;
@@ -168,11 +167,10 @@
 /* Expenses Section */
 .expenses-section {
   background: #111827;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
+  border: 1px solid #1f2937;
+  border-radius: 12px;
   padding: 16px;
   margin-bottom: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .expense-input-group {
@@ -186,11 +184,15 @@
   background: #1f2937;
   border: 1px solid #374151;
   color: #fff;
-  padding: 12px 14px; /* تحسين مريح للهواتف */
+  padding: 12px 14px;
   border-radius: 8px;
-  font-size: 16px; /* منع التكبير التلقائي في آي فون */
+  font-size: 16px;
   outline: none;
   width: 100%;
+}
+
+.expense-input:focus {
+  border-color: #f87171;
 }
 
 .expense-input.title {
@@ -222,8 +224,8 @@
 }
 
 .expense-chip {
-  background: rgba(239, 68, 68, 0.2);
-  border: 1px solid rgba(239, 68, 68,.4);
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
   color: #fca5a5;
   padding: 8px 12px;
   border-radius: 8px;
@@ -236,12 +238,11 @@
 
 /* Laisse Net Banner */
 .laisse-banner {
-  background: linear-gradient(135deg, #064e3b 0%, #022c22 100%);
+  background: #064e3b;
   border: 1px solid #10b981;
-  border-radius: 16px;
+  border-radius: 14px;
   padding: 20px;
   text-align: center;
-  box-shadow: 0 6px 15px rgba(16, 185, 129, 0.25);
   margin-top: 20px;
 }
 
@@ -258,7 +259,7 @@
   color: #34d399;
 }
 
-/* Responsive Media Queries للتحكم الدقيق في الهواتف */
+/* Media Queries */
 @media (min-width: 640px) {
   .expense-input.title {
     flex: 2;
@@ -289,16 +290,15 @@
   }
   .admin-title {
     justify-content: center;
-    font-size: 18px;
   }
   .admin-header button {
     width: 100%;
     justify-content: center;
   }
   .stats-grid {
-    grid-template-columns: 1fr 1fr; /* عمودين في الهواتف لتوفير المساحة */
+    grid-template-columns: 1fr 1fr;
   }
   .stat-card:last-child {
-    grid-column: span 2; /* إجمالي الصندوق يأخذ العرض كاملاً */
+    grid-column: span 2;
   }
 }
