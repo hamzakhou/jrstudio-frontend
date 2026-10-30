@@ -1,166 +1,242 @@
-/* لوحة تحكم الأدمن والكاشير - JR Studio */
+/* --- JR Studio - Modern Dark & Gold Theme --- */
+
 .admin-container {
-  max-width: 1200px;
+  padding: 24px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 20px;
-  background-color: #111827;
+  background-color: #0b0f19;
   color: #f3f4f6;
   min-height: 100vh;
-  font-family: system-ui, -apple-system, sans-serif;
-  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  direction: rtl;
 }
 
+/* Header Animation & Style */
 .admin-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 2px solid #374151;
-  padding-bottom: 15px;
-  margin-bottom: 20px;
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  border: 1px solid rgba(251, 191, 36, 0.2);
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+  animation: fadeInDown 0.5s ease-out;
 }
 
 .admin-title {
-  font-size: 24px;
-  font-weight: bold;
-  color: #fbbf24;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  font-size: 24px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.5px;
 }
 
-/* بطاقات الإحصائيات السريعة */
+.admin-title svg {
+  color: #fbbf24;
+  filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.4));
+}
+
+/* Stats Grid & Cards */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 16px;
-  margin-bottom: 25px;
+  margin-top: 12px;
 }
 
 .stat-card {
-  background-color: #1f2937;
-  border: 1px solid #374151;
+  background: rgba(31, 41, 55, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 12px;
-  padding: 16px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
+  gap: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(251, 191, 36, 0.4);
+  box-shadow: 0 10px 20px -5px rgba(251, 191, 36, 0.15);
 }
 
 .stat-label {
   font-size: 13px;
   color: #9ca3af;
-  margin-bottom: 6px;
+  font-weight: 600;
 }
 
 .stat-value {
   font-size: 22px;
-  font-weight: bold;
+  font-weight: 800;
 }
 
-.stat-value.gold { color: #fbbf24; }
-.stat-value.blue { color: #38bdf8; }
-.stat-value.red { color: #f87171; }
-.stat-value.green { color: #4ade80; }
+.stat-value.gold {
+  color: #fbbf24;
+  text-shadow: 0 0 12px rgba(251, 191, 36, 0.25);
+}
 
-/* عرض الحلاقين تماماً كأعمدة الدفتر الورقي */
+.stat-value.blue {
+  color: #60a5fa;
+}
+
+.stat-value.red {
+  color: #f87171;
+}
+
+.stat-value.green {
+  color: #34d399;
+}
+
+/* Barbers Columns Grid */
 .barbers-columns-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 15px;
-  margin-bottom: 25px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+  margin-bottom: 30px;
 }
 
 .barber-column-card {
-  background-color: #1f2937;
-  border: 1px solid #374151;
-  border-radius: 10px;
-  padding: 12px;
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 14px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-sizing: border-box;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.barber-column-card:hover {
+  border-color: #374151;
+  transform: translateY(-2px);
 }
 
 .barber-col-header {
-  font-size: 16px;
-  font-weight: bold;
-  color: #fbbf24;
-  border-bottom: 1px solid #374151;
-  padding-bottom: 8px;
-  margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fbbf24;
+  border-bottom: 1px solid #1f2937;
+  padding-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .barber-col-services {
-  max-height: 200px;
+  max-height: 220px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-bottom: 10px;
+  gap: 8px;
+  padding-right: 2px;
+}
+
+/* Scrollbar styling */
+.barber-col-services::-webkit-scrollbar {
+  width: 4px;
+}
+.barber-col-services::-webkit-scrollbar-thumb {
+  background: #374151;
+  border-radius: 4px;
 }
 
 .barber-col-item {
-  background-color: #111827;
-  padding: 8px;
-  border-radius: 6px;
-  font-size: 12px;
-  display: flex;
-  justify-content: space-between;
+  background: #1f2937;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  transition: background 0.2s;
+}
+
+.barber-col-item:hover {
+  background: #2d3748;
 }
 
 .barber-col-totals {
-  background-color: #111827;
-  padding: 8px;
-  border-radius: 6px;
-  font-size: 12px;
-  border-top: 1px solid #374151;
+  border-top: 1px dashed #374151;
+  padding-top: 12px;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
 }
 
 .barber-col-row {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 4px;
+  color: #9ca3af;
 }
 
-/* قسم المصاريف اليومية Dépenses */
+/* Expenses Section */
 .expenses-section {
-  background-color: #1f2937;
-  border: 1px solid #374151;
-  border-radius: 12px;
-  padding: 16px;
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 14px;
+  padding: 20px;
   margin-bottom: 25px;
 }
 
 .expense-input-group {
   display: flex;
   gap: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
 }
 
 .expense-input {
-  background-color: #111827;
-  border: 1px solid #4b5563;
+  background: #1f2937;
+  border: 1px solid #374151;
   color: #fff;
-  padding: 8px 12px;
-  border-radius: 6px;
+  padding: 10px 14px;
+  border-radius: 8px;
   font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
 }
 
-.expense-input.title { flex: 2; }
-.expense-input.amount { flex: 1; }
+.expense-input:focus {
+  border-color: #f87171;
+}
+
+.expense-input.title {
+  flex: 2;
+  min-width: 180px;
+}
+
+.expense-input.amount {
+  flex: 1;
+  min-width: 100px;
+}
 
 .add-expense-btn {
   background-color: #ef4444;
   color: #fff;
   border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
+  padding: 10px 20px;
+  border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
-  white-space: nowrap;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.add-expense-btn:hover {
+  background-color: #dc2626;
+}
+
+.add-expense-btn:active {
+  transform: scale(0.97);
 }
 
 .expenses-list {
@@ -170,103 +246,72 @@
 }
 
 .expense-chip {
-  background-color: #111827;
-  border: 1px solid #f87171;
-  color: #f87171;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
   padding: 6px 12px;
-  border-radius: 20px;
+  border-radius: 8px;
   font-size: 13px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
-/* الصافي النهائي Laisse */
+/* Laisse Net Banner */
 .laisse-banner {
-  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
-  border: 2px solid #fbbf24;
+  background: linear-gradient(135deg, #064e3b 0%, #022c22 100%);
+  border: 1px solid #10b981;
   border-radius: 16px;
   padding: 24px;
   text-align: center;
-  box-shadow: 0 10px 20px rgba(251, 191, 36, 0.1);
-  box-sizing: border-box;
+  box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.2);
+  margin-top: 25px;
+  animation: pulseGlow 3s infinite alternate;
 }
 
 .laisse-title {
-  font-size: 18px;
-  color: #d1d5db;
+  font-size: 16px;
+  color: #a7f3d0;
+  font-weight: 700;
   margin-bottom: 8px;
 }
 
 .laisse-amount {
-  font-size: 42px;
+  font-size: 38px;
   font-weight: 900;
-  color: #fbbf24;
-  letter-spacing: 1px;
+  color: #34d399;
+  text-shadow: 0 0 20px rgba(52, 211, 153, 0.4);
 }
 
-/* --- تحسينات التجاوب الكامل للشاشات الصغيرة والهواتف (Admin) --- */
+/* Animations Keyframes */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseGlow {
+  0% {
+    box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.2);
+  }
+  100% {
+    box-shadow: 0 10px 35px -5px rgba(16, 185, 129, 0.4);
+  }
+}
+
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .admin-container {
-    padding: 12px !important;
+    padding: 12px;
   }
-
   .admin-header {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 12px !important;
-  }
-
-  .admin-title {
-    font-size: 18px !important;
-  }
-
-  /* تحويل شبكة الإحصائيات لتكون بطاقة واحدة في كل سطر */
-  .stats-grid {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-    gap: 10px !important;
-  }
-
-  .stat-card {
-    grid-column: span 1 !important;
-    padding: 12px !important;
-  }
-
-  .stat-value {
-    font-size: 20px !important;
-  }
-
-  /* جعل أعمدة الحلاقين تصطف عمودياً بكامل عرض الشاشة */
-  .barbers-columns-grid {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 16px !important;
-  }
-
-  .barber-column-card {
-    width: 100% !important;
-    box-sizing: border-box !important;
-  }
-
-  /* ترتيب نموذج إدخال المصاريف */
-  .expense-input-group {
-    flex-direction: column !important;
-    gap: 8px !important;
-  }
-
-  .expense-input.title,
-  .expense-input.amount,
-  .add-expense-btn {
-    width: 100% !important;
-    box-sizing: border-box !important;
-  }
-
-  .laisse-banner {
-    padding: 16px !important;
-  }
-
-  .laisse-amount {
-    font-size: 26px !important;
+    flex-direction: column;
+    gap: 14px;
+    align-items: flex-start;
   }
 }
