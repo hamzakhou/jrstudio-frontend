@@ -1,16 +1,21 @@
-/* --- JR Studio - Fast & Modern Dark Gold Theme --- */
+/* --- JR Studio - Mobile Optimized & Fast Dark Gold Theme --- */
 
 .admin-container {
-  padding: 24px;
+  padding: 16px;
   max-width: 1400px;
   margin: 0 auto;
-  background: linear-gradient(rgba(11, 15, 25, 0.92), rgba(11, 15, 25, 0.95)), 
+  background: linear-gradient(rgba(11, 15, 25, 0.94), rgba(11, 15, 25, 0.97)), 
               url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=1600&auto=format&fit=crop') no-repeat center center fixed;
   background-size: cover;
   color: #f3f4f6;
   min-height: 100vh;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   direction: rtl;
+  box-sizing: border-box;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 /* Header Style */
@@ -20,58 +25,54 @@
   align-items: center;
   background: #1f2937;
   border: 1px solid rgba(251, 191, 36, 0.25);
-  border-radius: 16px;
-  padding: 20px 24px;
-  margin-bottom: 24px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+  gap: 12px;
 }
 
 .admin-title {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 24px;
+  gap: 10px;
+  font-size: 20px;
   font-weight: 800;
   color: #ffffff;
 }
 
 .admin-title svg {
   color: #fbbf24;
+  flex-shrink: 0;
 }
 
 /* Stats Grid & Cards */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
-  margin-top: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
 }
 
 .stat-card {
   background: #1f2937;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
-  padding: 18px;
+  padding: 14px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  transition: transform 0.2s ease, border-color 0.2s ease;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.stat-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(251, 191, 36, 0.5);
+  gap: 6px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
 }
 
 .stat-label {
-  font-size: 13px;
+  font-size: 12px;
   color: #9ca3af;
   font-weight: 600;
 }
 
 .stat-value {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 800;
 }
 
@@ -94,16 +95,16 @@
 /* Barbers Columns Grid */
 .barbers-columns-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 18px;
-  margin-bottom: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
 }
 
 .barber-column-card {
   background: #111827;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
-  padding: 16px;
+  padding: 14px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -114,16 +115,16 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   color: #fbbf24;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  padding-bottom: 10px;
-  margin-bottom: 12px;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .barber-col-services {
-  max-height: 220px;
+  max-height: 200px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -150,8 +151,8 @@
 
 .barber-col-totals {
   border-top: 1px dashed rgba(255, 255, 255, 0.1);
-  padding-top: 12px;
-  margin-top: 12px;
+  padding-top: 10px;
+  margin-top: 10px;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -169,15 +170,15 @@
   background: #111827;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
-  padding: 20px;
-  margin-bottom: 25px;
+  padding: 16px;
+  margin-bottom: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .expense-input-group {
   display: flex;
-  gap: 10px;
-  margin-bottom: 14px;
+  gap: 8px;
+  margin-bottom: 12px;
   flex-wrap: wrap;
 }
 
@@ -185,57 +186,52 @@
   background: #1f2937;
   border: 1px solid #374151;
   color: #fff;
-  padding: 10px 14px;
+  padding: 12px 14px; /* تحسين مريح للهواتف */
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 16px; /* منع التكبير التلقائي في آي فون */
   outline: none;
-}
-
-.expense-input:focus {
-  border-color: #f87171;
+  width: 100%;
 }
 
 .expense-input.title {
   flex: 2;
-  min-width: 180px;
+  min-width: 100%;
 }
 
 .expense-input.amount {
   flex: 1;
-  min-width: 100px;
+  min-width: 100%;
 }
 
 .add-expense-btn {
   background-color: #ef4444;
   color: #fff;
   border: none;
-  padding: 10px 20px;
+  padding: 12px 20px;
   border-radius: 8px;
   font-weight: bold;
+  font-size: 15px;
   cursor: pointer;
-  transition: background 0.2s;
-}
-
-.add-expense-btn:hover {
-  background-color: #dc2626;
+  width: 100%;
 }
 
 .expenses-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
 }
 
 .expense-chip {
   background: rgba(239, 68, 68, 0.2);
-  border: 1px solid rgba(239, 68, 68, 0.4);
+  border: 1px solid rgba(239, 68, 68,.4);
   color: #fca5a5;
-  padding: 6px 12px;
+  padding: 8px 12px;
   border-radius: 8px;
   font-size: 13px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
+  width: 100%;
 }
 
 /* Laisse Net Banner */
@@ -243,33 +239,66 @@
   background: linear-gradient(135deg, #064e3b 0%, #022c22 100%);
   border: 1px solid #10b981;
   border-radius: 16px;
-  padding: 24px;
+  padding: 20px;
   text-align: center;
-  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25);
-  margin-top: 25px;
+  box-shadow: 0 6px 15px rgba(16, 185, 129, 0.25);
+  margin-top: 20px;
 }
 
 .laisse-title {
-  font-size: 16px;
+  font-size: 15px;
   color: #a7f3d0;
   font-weight: 700;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .laisse-amount {
-  font-size: 38px;
+  font-size: 32px;
   font-weight: 900;
   color: #34d399;
 }
 
-/* Responsive adjustments */
+/* Responsive Media Queries للتحكم الدقيق في الهواتف */
+@media (min-width: 640px) {
+  .expense-input.title {
+    flex: 2;
+    min-width: 180px;
+  }
+  .expense-input.amount {
+    flex: 1;
+    min-width: 120px;
+  }
+  .add-expense-btn {
+    width: auto;
+  }
+  .expense-chip {
+    width: auto;
+  }
+}
+
 @media (max-width: 768px) {
   .admin-container {
-    padding: 12px;
+    padding: 10px;
   }
   .admin-header {
     flex-direction: column;
-    gap: 14px;
-    align-items: flex-start;
+    align-items: stretch;
+    text-align: center;
+    gap: 12px;
+    padding: 14px;
+  }
+  .admin-title {
+    justify-content: center;
+    font-size: 18px;
+  }
+  .admin-header button {
+    width: 100%;
+    justify-content: center;
+  }
+  .stats-grid {
+    grid-template-columns: 1fr 1fr; /* عمودين في الهواتف لتوفير المساحة */
+  }
+  .stat-card:last-child {
+    grid-column: span 2; /* إجمالي الصندوق يأخذ العرض كاملاً */
   }
 }
