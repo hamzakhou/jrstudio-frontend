@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { INITIAL_BARBERS } from '../data/initialData';
-import { LayoutDashboard, TrendingDown, LogOut, Plus, Trash2, History, Wallet, Landmark, Gift, MessageCircle, Calendar } from 'lucide-react';
+import { LayoutDashboard, TrendingDown, LogOut, Plus, Trash2, History, Wallet, Landmark, Gift, MessageCircle, Calendar, Trophy, Flame } from 'lucide-react';
 import './AdminDashboard.css';
 
 // رابط السيرفر السحابي على Vercel
@@ -150,6 +150,49 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
   const totalBarbersPay = calculateBarbersTotalPay();
   const laisseNetTotal = totalCaisseBeforePay - totalBarbersPay - totalTipsToday;
 
+  // --- 🌟 منطق حساب الإحصائيات الذكية (Smart Insights) ---
+  const getTopBarber = () => {
+    if (!validTransactions.length) return null;
+    const barberTotals = {};
+
+    validTransactions.forEach(t => {
+      barberTotals[t.barber] = (barberTotals[t.barber] || 0) + Number(t.price);
+    });
+
+    let topName = '';
+    let maxRev = 0;
+    for (const [name, rev] of Object.entries(barberTotals)) {
+      if (rev > maxRev) {
+        maxRev = rev;
+        topName = name;
+      }
+    }
+    return topName ? { name: topName, revenue: maxRev } : null;
+  };
+
+  const getMostPopularService = () => {
+    if (!validTransactions.length) return 'لا توجد خدمات بعد';
+    const serviceCounts = {};
+
+    validTransactions.forEach(t => {
+      const sName = t.shortName || t.serviceName || 'خدمة';
+      serviceCounts[sName] = (serviceCounts[sName] || 0) + 1;
+    });
+
+    let popular = '';
+    let maxCount = 0;
+    for (const [s, count] of Object.entries(serviceCounts)) {
+      if (count > maxCount) {
+        maxCount = count;
+        popular = s;
+      }
+    }
+    return popular || 'حلاقة شعر';
+  };
+
+  const topBarber = getTopBarber();
+  const popularService = getMostPopularService();
+
   const handleAddExpense = async (e) => {
     e.preventDefault();
     if (!newExpTitle || !newExpAmount) return;
@@ -283,6 +326,78 @@ export default function AdminDashboard({ transactions, setTransactions, onLogout
         >
           <LogOut size={16} /> خروج الأدمن
         </button>
+      </div>
+
+      {/* 🌟 قسم الإحصائيات الذكية (Smart Insights) */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+        gap: '16px',
+        marginBottom: '20px'
+      }}>
+        {/* الحلاق الأكثر إنتاجية */}
+        <div style={{
+          background: 'linear-gradient(135deg, #1f2937 0%, #111827 100%)',
+          border: '1px solid rgba(251, 191, 36, 0.4)',
+          borderRadius: '14px',
+          padding: '16px 20px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '16px',
+          boxShadow: '0 8px 20px rgba(0,0,0,0.3)'
+        }}>
+          <div style={{
+            backgroundColor: 'rgba(251, 191, 36, 0.15)',
+            padding: '14px',
+            borderRadius: '12px',
+            color: '#fbbf24',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <Trophy size={28} />
+          </div>
+          <div>
+            <span style={{ fontSize: '12px', color: '#9ca3af', fontWeight: '700', display: 'block', marginBottom: '4px' }}>
+              ⭐ الحلاق الأكثر إنتاجية اليوم (Top Performer)
+            </span>
+            <div style={{ fontSize: '18px', fontWeight: '800', color: '#fff' }}>
+              {topBarber ? `${topBarber.name} (${topBarber.revenue} DH)` : 'لا توجد خدمات بعد'}
+            </div>
+          </div>
+        </div>
+
+        {/* الخدمة الأكثر طلباً */}
+        <div style={{
+          background: 'linear-gradient(135deg, #1f2937 0%, #111827 100%)',
+          border: '1px solid rgba(248, 113, 113, 0.4)',
+          borderRadius: '14px',
+          padding: '16px 20px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '16px',
+          boxShadow: '0 8px 20px rgba(0,0,0,0.3)'
+        }}>
+          <div style={{
+            backgroundColor: 'rgba(239, 68, 68, 0.15)',
+            padding: '14px',
+            borderRadius: '12px',
+            color: '#f87171',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <Flame size={28} />
+          </div>
+          <div>
+            <span style={{ fontSize: '12px', color: '#9ca3af', fontWeight: '700', display: 'block', marginBottom: '4px' }}>
+              🔥 الخدمة الأكثر طلباً اليوم (Most Popular)
+            </span>
+            <div style={{ fontSize: '18px', fontWeight: '800', color: '#fff' }}>
+              {popularService}
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* شريط اختيار الأرشيف (الأيام السابقة) */}
