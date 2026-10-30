@@ -3,12 +3,15 @@
   max-width: 400px;
   margin: 60px auto;
   padding: 30px 24px;
-  background-color: #111827;
-  border: 1px solid #374151;
+  /* خلفية فخمة لصالون حلاقة مع تغميق خفيف لضمان وضوح النصوص */
+  background: linear-gradient(rgba(17, 24, 39, 0.90), rgba(17, 24, 39, 0.94)), 
+              url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=1600&auto=format&fit=crop') no-repeat center center;
+  background-size: cover;
+  border: 1px solid rgba(251, 191, 36, 0.3);
   border-radius: 16px;
   color: #ffffff;
   font-family: system-ui, -apple-system, sans-serif;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
   text-align: center;
 }
 
@@ -43,12 +46,12 @@
 .select-barber, .pin-input {
   width: 100%;
   padding: 12px;
-  background-color: #1f2937;
+  background-color: rgba(31, 41, 55, 0.9);
   border: 1px solid #4b5563;
   border-radius: 8px;
   color: #ffffff;
   font-size: 15px;
-  box-sizing: border-border-box;
+  box-sizing: border-box;
   outline: none;
   transition: border-color 0.2s;
 }
@@ -85,7 +88,7 @@
   color: #f87171;
   font-size: 13px;
   margin-top: 12px;
-  background-color: rgba(239, 68, 68, 0.1);
+  background-color: rgba(239, 68, 68, 0.15);
   padding: 8px;
   border-radius: 6px;
 }
